@@ -1,0 +1,28 @@
+{
+  "name": "@ngrx/component-store",
+  "version": "9.1.2+3.sha-a2657ac",
+  "description": "Reactive store for component state",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ngrx/platform.git"
+  },
+  "keywords": [
+    "Angular",
+    "Redux",
+    "NgRx",
+    "Schematics",
+    "Local State",
+    "Component State",
+    "State management"
+  ],
+  "author": "NgRx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ngrx/platform/issues"
+  },
+  "homepage": "https://github.com/ngrx/platform#readme",
+  "peerDependencies": {
+    "rxjs": "^6.5.3"
+  },
+  "sideEffects": false
+}
