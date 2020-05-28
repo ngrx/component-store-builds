@@ -1,10 +1,10 @@
 import { Observable, Subscription } from 'rxjs';
 export declare class ComponentStore<T extends object> {
+    private readonly destroySubject$;
+    readonly destroy$: Observable<void>;
     private readonly stateSubject$;
     private isInitialized;
     readonly state$: Observable<T>;
-    private readonly destroySubject$;
-    readonly destroy$: Observable<void>;
     constructor(defaultState?: T);
     /** Completes all relevant Observable streams. */
     ngOnDestroy(): void;
@@ -35,4 +35,18 @@ export declare class ComponentStore<T extends object> {
      * updaterFn, returning such object.
      */
     setState(stateOrUpdaterFn: T | ((state: T) => T)): void;
+    /**
+     * Creates a selector.
+     *
+     * This supports chaining up to 4 selectors. More could be added as needed.
+     *
+     * @param projector A pure projection function that takes the current state and
+     *   returns some new slice/projection of that state.
+     * @return An observable of the projector results.
+     */
+    select<R>(projector: (s: T) => R): Observable<R>;
+    select<R, S1>(s1: Observable<S1>, projector: (s1: S1) => R): Observable<R>;
+    select<R, S1, S2>(s1: Observable<S1>, s2: Observable<S2>, projector: (s1: S1, s2: S2) => R): Observable<R>;
+    select<R, S1, S2, S3>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, projector: (s1: S1, s2: S2, s3: S3) => R): Observable<R>;
+    select<R, S1, S2, S3, S4>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, s4: Observable<S4>, projector: (s1: S1, s2: S2, s3: S3, s4: S4) => R): Observable<R>;
 }

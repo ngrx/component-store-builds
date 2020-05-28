@@ -1,20 +1,72 @@
 /**
- * @license NgRx 9.2.0
+ * @license NgRx 9.2.0+1.sha-47e7ba3
  * (c) 2015-2018 Brandon Roberts, Mike Ryan, Rob Wormald, Victor Savkin
  * License: MIT
  */
-import { ReplaySubject, isObservable, of, throwError } from 'rxjs';
-import { concatMap, withLatestFrom, takeUntil } from 'rxjs/operators';
+import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, throwError, combineLatest } from 'rxjs';
+import { concatMap, withLatestFrom, takeUntil, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+
+/**
+ * @license MIT License
+ *
+ * Copyright (c) 2017-2020 Nicholas Jamieson and contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+function debounceSync() {
+    return source => new Observable(observer => {
+        let actionSubscription;
+        let actionValue;
+        const rootSubscription = new Subscription();
+        rootSubscription.add(source.subscribe({
+            complete: () => {
+                if (actionSubscription) {
+                    observer.next(actionValue);
+                }
+                observer.complete();
+            },
+            error: error => observer.error(error),
+            next: value => {
+                actionValue = value;
+                if (!actionSubscription) {
+                    actionSubscription = asapScheduler.schedule(() => {
+                        observer.next(actionValue);
+                        actionSubscription = undefined;
+                    });
+                    rootSubscription.add(actionSubscription);
+                }
+            },
+        }));
+        return rootSubscription;
+    });
+}
 
 class ComponentStore {
     constructor(defaultState) {
-        this.stateSubject$ = new ReplaySubject(1);
-        this.isInitialized = false;
-        this.state$ = this.stateSubject$.asObservable();
         // Should be used only in ngOnDestroy.
         this.destroySubject$ = new ReplaySubject(1);
         // Exposed to any extending Store to be used for the teardowns.
         this.destroy$ = this.destroySubject$.asObservable();
+        this.stateSubject$ = new ReplaySubject(1);
+        this.isInitialized = false;
+        // Needs to be after destroy$ is declared because it's used in select.
+        this.state$ = this.select(s => s);
         // State can be initialized either through constructor, or initState or
         // setState.
         if (defaultState) {
@@ -90,6 +142,28 @@ class ComponentStore {
         else {
             this.updater(stateOrUpdaterFn)();
         }
+    }
+    select(...args) {
+        let observable$;
+        // project is always the last argument, so `pop` it from args.
+        const projector = args.pop();
+        if (args.length === 0) {
+            // If projector was the only argument then we'll use map operator.
+            observable$ = this.stateSubject$.pipe(map(projector));
+        }
+        else {
+            // If there are multiple arguments, we're chaining selectors, so we need
+            // to take the combineLatest of them before calling the map function.
+            observable$ = combineLatest(args).pipe(
+            // The most performant way to combine Observables avoiding unnecessary
+            // emissions and projector calls.
+            debounceSync(), map((args) => projector(...args)));
+        }
+        const distinctSharedObservable$ = observable$.pipe(distinctUntilChanged(), shareReplay({
+            refCount: true,
+            bufferSize: 1,
+        }), takeUntil(this.destroy$));
+        return distinctSharedObservable$;
     }
 }
 
