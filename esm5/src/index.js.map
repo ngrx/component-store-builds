@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"ng://@ngrx/component-store/","sources":["src/index.ts"],"names":[],"mappings":";;;;;AAAA,+BAAc,mBAAmB,CAAC","sourcesContent":["export * from './component-store';\n"]}

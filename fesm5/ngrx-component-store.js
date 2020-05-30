@@ -1,3 +1,70 @@
+import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, throwError, combineLatest } from 'rxjs';
+import { concatMap, withLatestFrom, takeUntil, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: src/debounceSync.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @template T
+ * @return {?}
+ */
+function debounceSync() {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    function (source) {
+        return new Observable((/**
+         * @param {?} observer
+         * @return {?}
+         */
+        function (observer) {
+            /** @type {?} */
+            var actionSubscription;
+            /** @type {?} */
+            var actionValue;
+            /** @type {?} */
+            var rootSubscription = new Subscription();
+            rootSubscription.add(source.subscribe({
+                complete: (/**
+                 * @return {?}
+                 */
+                function () {
+                    if (actionSubscription) {
+                        observer.next(actionValue);
+                    }
+                    observer.complete();
+                }),
+                error: (/**
+                 * @param {?} error
+                 * @return {?}
+                 */
+                function (error) { return observer.error(error); }),
+                next: (/**
+                 * @param {?} value
+                 * @return {?}
+                 */
+                function (value) {
+                    actionValue = value;
+                    if (!actionSubscription) {
+                        actionSubscription = asapScheduler.schedule((/**
+                         * @return {?}
+                         */
+                        function () {
+                            observer.next(actionValue);
+                            actionSubscription = undefined;
+                        }));
+                        rootSubscription.add(actionSubscription);
+                    }
+                }),
+            }));
+            return rootSubscription;
+        }));
+    });
+}
+
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -19,17 +86,9 @@ var __spread = (this && this.__spread) || function () {
     return ar;
 };
 /**
- * @fileoverview added by tsickle
- * Generated from: src/component-store.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-import { isObservable, of, ReplaySubject, throwError, combineLatest, } from 'rxjs';
-import { concatMap, takeUntil, withLatestFrom, map, distinctUntilChanged, shareReplay, } from 'rxjs/operators';
-import { debounceSync } from './debounceSync';
-/**
  * @template T
  */
-var /**
+var  /**
  * @template T
  */
 ComponentStore = /** @class */ (function () {
@@ -256,10 +315,6 @@ ComponentStore = /** @class */ (function () {
     };
     return ComponentStore;
 }());
-/**
- * @template T
- */
-export { ComponentStore };
 if (false) {
     /**
      * @type {?}
@@ -281,4 +336,30 @@ if (false) {
     /** @type {?} */
     ComponentStore.prototype.state$;
 }
-//# sourceMappingURL=component-store.js.map
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: src/index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: public_api.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: index.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * Generated from: ngrx-component-store.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+export { ComponentStore };
+//# sourceMappingURL=ngrx-component-store.js.map
