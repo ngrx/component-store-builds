@@ -89,6 +89,13 @@
         return ar;
     };
     /**
+     * Return type of the effect, that behaves differently based on whether the
+     * argument is passed to the callback.
+     * @record
+     * @template T
+     */
+    function EffectReturnFn() { }
+    /**
      * @template T
      */
     var   /**
@@ -315,6 +322,62 @@
                 bufferSize: 1,
             }), operators.takeUntil(this.destroy$));
             return distinctSharedObservable$;
+        };
+        /**
+         * Creates an effect.
+         *
+         * This effect is subscribed to for the life of the @Component.
+         * @param generator A function that takes an origin Observable input and
+         *     returns an Observable. The Observable that is returned will be
+         *     subscribed to for the life of the component.
+         * @return A function that, when called, will trigger the origin Observable.
+         */
+        /**
+         * Creates an effect.
+         *
+         * This effect is subscribed to for the life of the \@Component.
+         * @template V, R
+         * @param {?} generator A function that takes an origin Observable input and
+         *     returns an Observable. The Observable that is returned will be
+         *     subscribed to for the life of the component.
+         * @return {?} A function that, when called, will trigger the origin Observable.
+         */
+        ComponentStore.prototype.effect = /**
+         * Creates an effect.
+         *
+         * This effect is subscribed to for the life of the \@Component.
+         * @template V, R
+         * @param {?} generator A function that takes an origin Observable input and
+         *     returns an Observable. The Observable that is returned will be
+         *     subscribed to for the life of the component.
+         * @return {?} A function that, when called, will trigger the origin Observable.
+         */
+        function (generator) {
+            var _this = this;
+            /** @type {?} */
+            var origin$ = new rxjs.Subject();
+            generator(origin$)
+                // tied to the lifecycle 👇 of ComponentStore
+                .pipe(operators.takeUntil(this.destroy$))
+                .subscribe();
+            return (/**
+             * @param {?=} observableOrValue
+             * @return {?}
+             */
+            function (observableOrValue) {
+                /** @type {?} */
+                var observable$ = rxjs.isObservable(observableOrValue)
+                    ? observableOrValue
+                    : rxjs.of(observableOrValue);
+                return observable$.pipe(operators.takeUntil(_this.destroy$)).subscribe((/**
+                 * @param {?} value
+                 * @return {?}
+                 */
+                function (value) {
+                    // any new 👇 value is pushed into a stream
+                    origin$.next(value);
+                }));
+            });
         };
         return ComponentStore;
     }());

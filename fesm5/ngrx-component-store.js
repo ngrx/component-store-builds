@@ -1,4 +1,4 @@
-import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, throwError, combineLatest } from 'rxjs';
+import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, throwError, combineLatest, Subject } from 'rxjs';
 import { concatMap, withLatestFrom, takeUntil, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 
 /**
@@ -85,6 +85,13 @@ var __spread = (this && this.__spread) || function () {
     for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
     return ar;
 };
+/**
+ * Return type of the effect, that behaves differently based on whether the
+ * argument is passed to the callback.
+ * @record
+ * @template T
+ */
+function EffectReturnFn() { }
 /**
  * @template T
  */
@@ -312,6 +319,62 @@ ComponentStore = /** @class */ (function () {
             bufferSize: 1,
         }), takeUntil(this.destroy$));
         return distinctSharedObservable$;
+    };
+    /**
+     * Creates an effect.
+     *
+     * This effect is subscribed to for the life of the @Component.
+     * @param generator A function that takes an origin Observable input and
+     *     returns an Observable. The Observable that is returned will be
+     *     subscribed to for the life of the component.
+     * @return A function that, when called, will trigger the origin Observable.
+     */
+    /**
+     * Creates an effect.
+     *
+     * This effect is subscribed to for the life of the \@Component.
+     * @template V, R
+     * @param {?} generator A function that takes an origin Observable input and
+     *     returns an Observable. The Observable that is returned will be
+     *     subscribed to for the life of the component.
+     * @return {?} A function that, when called, will trigger the origin Observable.
+     */
+    ComponentStore.prototype.effect = /**
+     * Creates an effect.
+     *
+     * This effect is subscribed to for the life of the \@Component.
+     * @template V, R
+     * @param {?} generator A function that takes an origin Observable input and
+     *     returns an Observable. The Observable that is returned will be
+     *     subscribed to for the life of the component.
+     * @return {?} A function that, when called, will trigger the origin Observable.
+     */
+    function (generator) {
+        var _this = this;
+        /** @type {?} */
+        var origin$ = new Subject();
+        generator(origin$)
+            // tied to the lifecycle 👇 of ComponentStore
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
+        return (/**
+         * @param {?=} observableOrValue
+         * @return {?}
+         */
+        function (observableOrValue) {
+            /** @type {?} */
+            var observable$ = isObservable(observableOrValue)
+                ? observableOrValue
+                : of(observableOrValue);
+            return observable$.pipe(takeUntil(_this.destroy$)).subscribe((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) {
+                // any new 👇 value is pushed into a stream
+                origin$.next(value);
+            }));
+        });
     };
     return ComponentStore;
 }());

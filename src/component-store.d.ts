@@ -1,4 +1,12 @@
 import { Observable, Subscription } from 'rxjs';
+/**
+ * Return type of the effect, that behaves differently based on whether the
+ * argument is passed to the callback.
+ */
+interface EffectReturnFn<T> {
+    (): void;
+    (t: T | Observable<T>): Subscription;
+}
 export declare class ComponentStore<T extends object> {
     private readonly destroySubject$;
     readonly destroy$: Observable<void>;
@@ -49,4 +57,15 @@ export declare class ComponentStore<T extends object> {
     select<R, S1, S2>(s1: Observable<S1>, s2: Observable<S2>, projector: (s1: S1, s2: S2) => R): Observable<R>;
     select<R, S1, S2, S3>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, projector: (s1: S1, s2: S2, s3: S3) => R): Observable<R>;
     select<R, S1, S2, S3, S4>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, s4: Observable<S4>, projector: (s1: S1, s2: S2, s3: S3, s4: S4) => R): Observable<R>;
+    /**
+     * Creates an effect.
+     *
+     * This effect is subscribed to for the life of the @Component.
+     * @param generator A function that takes an origin Observable input and
+     *     returns an Observable. The Observable that is returned will be
+     *     subscribed to for the life of the component.
+     * @return A function that, when called, will trigger the origin Observable.
+     */
+    effect<V, R = unknown>(generator: (origin$: Observable<V>) => Observable<R>): EffectReturnFn<V>;
 }
+export {};

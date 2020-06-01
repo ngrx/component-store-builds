@@ -3,9 +3,16 @@
  * Generated from: src/component-store.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-import { isObservable, of, ReplaySubject, throwError, combineLatest, } from 'rxjs';
+import { isObservable, of, ReplaySubject, throwError, combineLatest, Subject, } from 'rxjs';
 import { concatMap, takeUntil, withLatestFrom, map, distinctUntilChanged, shareReplay, } from 'rxjs/operators';
 import { debounceSync } from './debounceSync';
+/**
+ * Return type of the effect, that behaves differently based on whether the
+ * argument is passed to the callback.
+ * @record
+ * @template T
+ */
+function EffectReturnFn() { }
 /**
  * @template T
  */
@@ -162,6 +169,42 @@ export class ComponentStore {
             bufferSize: 1,
         }), takeUntil(this.destroy$));
         return distinctSharedObservable$;
+    }
+    /**
+     * Creates an effect.
+     *
+     * This effect is subscribed to for the life of the \@Component.
+     * @template V, R
+     * @param {?} generator A function that takes an origin Observable input and
+     *     returns an Observable. The Observable that is returned will be
+     *     subscribed to for the life of the component.
+     * @return {?} A function that, when called, will trigger the origin Observable.
+     */
+    effect(generator) {
+        /** @type {?} */
+        const origin$ = new Subject();
+        generator(origin$)
+            // tied to the lifecycle 👇 of ComponentStore
+            .pipe(takeUntil(this.destroy$))
+            .subscribe();
+        return (/**
+         * @param {?=} observableOrValue
+         * @return {?}
+         */
+        (observableOrValue) => {
+            /** @type {?} */
+            const observable$ = isObservable(observableOrValue)
+                ? observableOrValue
+                : of(observableOrValue);
+            return observable$.pipe(takeUntil(this.destroy$)).subscribe((/**
+             * @param {?} value
+             * @return {?}
+             */
+            value => {
+                // any new 👇 value is pushed into a stream
+                origin$.next(value);
+            }));
+        });
     }
 }
 if (false) {
