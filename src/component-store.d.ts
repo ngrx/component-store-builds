@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
  * Return type of the effect, that behaves differently based on whether the
  * argument is passed to the callback.
  */
-interface EffectReturnFn<T> {
+export interface EffectReturnFn<T> {
     (): void;
     (t: T | Observable<T>): Subscription;
 }
@@ -68,4 +68,3 @@ export declare class ComponentStore<T extends object> {
      */
     effect<V, R = unknown>(generator: (origin$: Observable<V>) => Observable<R>): EffectReturnFn<V>;
 }
-export {};

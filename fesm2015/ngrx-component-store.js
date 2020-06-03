@@ -94,7 +94,7 @@ class ComponentStore {
          * @param {?} s
          * @return {?}
          */
-        s => s));
+        (s) => s));
         // State can be initialized either through constructor, or initState or
         // setState.
         if (defaultState) {
@@ -146,7 +146,7 @@ class ComponentStore {
              * @param {?} value
              * @return {?}
              */
-            value => this.isInitialized
+            (value) => this.isInitialized
                 ? of(value).pipe(withLatestFrom(this.stateSubject$))
                 : // If state was not initialized, we'll throw an error.
                     throwError(Error(`${this.constructor.name} has not been initialized`)))), takeUntil(this.destroy$))
@@ -162,7 +162,7 @@ class ComponentStore {
                  * @param {?} error
                  * @return {?}
                  */
-                error => {
+                (error) => {
                     initializationError = error;
                     this.stateSubject$.error(error);
                 }),
@@ -262,7 +262,7 @@ class ComponentStore {
              * @param {?} value
              * @return {?}
              */
-            value => {
+            (value) => {
                 // any new 👇 value is pushed into a stream
                 origin$.next(value);
             }));
