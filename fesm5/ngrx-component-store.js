@@ -225,7 +225,8 @@ ComponentStore = /** @class */ (function () {
                 }),
             });
             if (initializationError) {
-                throw initializationError;
+                // prettier-ignore
+                throw /** @type {!Error} */ (initializationError);
             }
             return subscription;
         }))));
