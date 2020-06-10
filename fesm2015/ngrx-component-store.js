@@ -15,11 +15,11 @@ function debounceSync() {
      * @param {?} source
      * @return {?}
      */
-    source => new Observable((/**
+    (source) => new Observable((/**
      * @param {?} observer
      * @return {?}
      */
-    observer => {
+    (observer) => {
         /** @type {?} */
         let actionSubscription;
         /** @type {?} */
@@ -40,12 +40,12 @@ function debounceSync() {
              * @param {?} error
              * @return {?}
              */
-            error => observer.error(error)),
+            (error) => observer.error(error)),
             next: (/**
              * @param {?} value
              * @return {?}
              */
-            value => {
+            (value) => {
                 actionValue = value;
                 if (!actionSubscription) {
                     actionSubscription = asapScheduler.schedule((/**
