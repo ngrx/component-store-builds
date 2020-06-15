@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rxjs'), require('rxjs/operators')) :
-    typeof define === 'function' && define.amd ? define('@ngrx/component-store', ['exports', 'rxjs', 'rxjs/operators'], factory) :
-    (global = global || self, factory((global.ngrx = global.ngrx || {}, global.ngrx['component-store'] = {}), global.rxjs, global.rxjs.operators));
-}(this, (function (exports, rxjs, operators) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rxjs'), require('rxjs/operators'), require('@angular/core')) :
+    typeof define === 'function' && define.amd ? define('@ngrx/component-store', ['exports', 'rxjs', 'rxjs/operators', '@angular/core'], factory) :
+    (global = global || self, factory((global.ngrx = global.ngrx || {}, global.ngrx['component-store'] = {}), global.rxjs, global.rxjs.operators, global.ng.core));
+}(this, (function (exports, rxjs, operators, core) { 'use strict';
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -359,6 +359,8 @@
      * @template T
      */
     function EffectReturnFn() { }
+    /** @type {?} */
+    var initialStateToken = new core.InjectionToken('ComponentStore InitState');
     /**
      * @template T
      */
@@ -554,6 +556,13 @@
         };
         return ComponentStore;
     }());
+    ComponentStore.decorators = [
+        { type: core.Injectable }
+    ];
+    /** @nocollapse */
+    ComponentStore.ctorParameters = function () { return [
+        { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [initialStateToken,] }] }
+    ]; };
     if (false) {
         /**
          * @type {?}
@@ -601,6 +610,7 @@
      */
 
     exports.ComponentStore = ComponentStore;
+    exports.initialStateToken = initialStateToken;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

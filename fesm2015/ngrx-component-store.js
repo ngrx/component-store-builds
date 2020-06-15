@@ -1,5 +1,6 @@
 import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, throwError, combineLatest, Subject } from 'rxjs';
 import { concatMap, withLatestFrom, takeUntil, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import { InjectionToken, Injectable, Optional, Inject } from '@angular/core';
 
 /**
  * @fileoverview added by tsickle
@@ -75,6 +76,8 @@ function debounceSync() {
  * @template T
  */
 function EffectReturnFn() { }
+/** @type {?} */
+const initialStateToken = new InjectionToken('ComponentStore InitState');
 /**
  * @template T
  */
@@ -270,6 +273,13 @@ class ComponentStore {
         });
     }
 }
+ComponentStore.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+ComponentStore.ctorParameters = () => [
+    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [initialStateToken,] }] }
+];
 if (false) {
     /**
      * @type {?}
@@ -316,5 +326,5 @@ if (false) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ComponentStore };
+export { ComponentStore, initialStateToken };
 //# sourceMappingURL=ngrx-component-store.js.map

@@ -1,4 +1,5 @@
 import { Observable, Subscription } from 'rxjs';
+import { OnDestroy, InjectionToken } from '@angular/core';
 /**
  * Return type of the effect, that behaves differently based on whether the
  * argument is passed to the callback.
@@ -7,7 +8,8 @@ export interface EffectReturnFn<T> {
     (): void;
     (t: T | Observable<T>): Subscription;
 }
-export declare class ComponentStore<T extends object> {
+export declare const initialStateToken: InjectionToken<unknown>;
+export declare class ComponentStore<T extends object> implements OnDestroy {
     private readonly destroySubject$;
     readonly destroy$: Observable<void>;
     private readonly stateSubject$;
