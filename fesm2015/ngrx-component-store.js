@@ -1,10 +1,10 @@
-import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, throwError, combineLatest, Subject } from 'rxjs';
+import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, scheduled, queueScheduler, throwError, combineLatest, Subject } from 'rxjs';
 import { concatMap, withLatestFrom, takeUntil, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { InjectionToken, Injectable, Optional, Inject } from '@angular/core';
 
 /**
  * @fileoverview added by tsickle
- * Generated from: src/debounceSync.ts
+ * Generated from: src/debounce-sync.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
@@ -98,8 +98,7 @@ class ComponentStore {
          * @return {?}
          */
         (s) => s));
-        // State can be initialized either through constructor, or initState or
-        // setState.
+        // State can be initialized either through constructor or setState.
         if (defaultState) {
             this.initState(defaultState);
         }
@@ -150,7 +149,8 @@ class ComponentStore {
              * @return {?}
              */
             (value) => this.isInitialized
-                ? of(value).pipe(withLatestFrom(this.stateSubject$))
+                ? // Push the value into queueScheduler
+                    scheduled([value], queueScheduler).pipe(withLatestFrom(this.stateSubject$))
                 : // If state was not initialized, we'll throw an error.
                     throwError(Error(`${this.constructor.name} has not been initialized`)))), takeUntil(this.destroy$))
                 .subscribe({
@@ -215,7 +215,7 @@ class ComponentStore {
         const projector = args.pop();
         if (args.length === 0) {
             // If projector was the only argument then we'll use map operator.
-            observable$ = this.stateSubject$.pipe(map(projector));
+            observable$ = this.stateSubject$.pipe(debounceSync(), map(projector));
         }
         else {
             // If there are multiple arguments, we're chaining selectors, so we need

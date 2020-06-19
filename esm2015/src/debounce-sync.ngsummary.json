@@ -1,0 +1,1 @@
+{"moduleName":null,"summaries":[{"symbol":{"__symbol":0,"members":[]},"metadata":{"__symbolic":"function","parameters":[],"value":{"__symbolic":"error","message":"Lambda not supported","fileName":"modules/component-store/src/debounce-sync.ts"}}}],"symbols":[{"__symbol":0,"name":"debounceSync","filePath":"./debounce-sync"}]}

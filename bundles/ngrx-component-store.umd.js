@@ -298,7 +298,7 @@
 
     /**
      * @fileoverview added by tsickle
-     * Generated from: src/debounceSync.ts
+     * Generated from: src/debounce-sync.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
@@ -380,8 +380,7 @@
              * @param {?} s
              * @return {?}
              */function (s) { return s; }));
-            // State can be initialized either through constructor, or initState or
-            // setState.
+            // State can be initialized either through constructor or setState.
             if (defaultState) {
                 this.initState(defaultState);
             }
@@ -431,7 +430,8 @@
              * @param {?} value
              * @return {?}
              */function (value) { return _this.isInitialized
-                    ? rxjs.of(value).pipe(operators.withLatestFrom(_this.stateSubject$))
+                    ? // Push the value into queueScheduler
+                        rxjs.scheduled([value], rxjs.queueScheduler).pipe(operators.withLatestFrom(_this.stateSubject$))
                     : // If state was not initialized, we'll throw an error.
                         rxjs.throwError(Error(_this.constructor.name + " has not been initialized")); })), operators.takeUntil(_this.destroy$))
                     .subscribe({
@@ -499,7 +499,7 @@
             var projector = args.pop();
             if (args.length === 0) {
                 // If projector was the only argument then we'll use map operator.
-                observable$ = this.stateSubject$.pipe(operators.map(projector));
+                observable$ = this.stateSubject$.pipe(debounceSync(), operators.map(projector));
             }
             else {
                 // If there are multiple arguments, we're chaining selectors, so we need
