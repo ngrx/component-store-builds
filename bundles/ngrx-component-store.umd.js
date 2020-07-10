@@ -359,6 +359,14 @@
      * @template T
      */
     function EffectReturnFn() { }
+    /**
+     * @record
+     */
+    function SelectConfig() { }
+    if (false) {
+        /** @type {?|undefined} */
+        SelectConfig.prototype.debounce;
+    }
     /** @type {?} */
     var initialStateToken = new core.InjectionToken('ComponentStore InitState');
     /**
@@ -433,7 +441,7 @@
                     ? // Push the value into queueScheduler
                         rxjs.scheduled([value], rxjs.queueScheduler).pipe(operators.withLatestFrom(_this.stateSubject$))
                     : // If state was not initialized, we'll throw an error.
-                        rxjs.throwError(Error(_this.constructor.name + " has not been initialized")); })), operators.takeUntil(_this.destroy$))
+                        rxjs.throwError(new Error(_this.constructor.name + " has not been initialized")); })), operators.takeUntil(_this.destroy$))
                     .subscribe({
                     next: ( /**
                      * @param {?} __0
@@ -465,8 +473,14 @@
          * @return {?}
          */
         ComponentStore.prototype.initState = function (state) {
-            this.isInitialized = true;
-            this.stateSubject$.next(state);
+            var _this = this;
+            rxjs.scheduled([state], rxjs.queueScheduler).subscribe(( /**
+             * @param {?} s
+             * @return {?}
+             */function (s) {
+                _this.isInitialized = true;
+                _this.stateSubject$.next(s);
+            }));
         };
         /**
          * Sets the state specific value.
@@ -483,7 +497,7 @@
             }
         };
         /**
-         * @template R
+         * @template O, R, ProjectorFn
          * @param {...?} args
          * @return {?}
          */
@@ -492,32 +506,31 @@
             for (var _i = 0; _i < arguments.length; _i++) {
                 args[_i] = arguments[_i];
             }
+            var _a = processSelectorArgs(args), observables = _a.observables, projector = _a.projector, config = _a.config;
             /** @type {?} */
             var observable$;
-            // project is always the last argument, so `pop` it from args.
-            /** @type {?} */
-            var projector = args.pop();
-            if (args.length === 0) {
-                // If projector was the only argument then we'll use map operator.
-                observable$ = this.stateSubject$.pipe(debounceSync(), operators.map(projector));
+            // If there are no Observables to combine, then we'll just map the value.
+            if (observables.length === 0) {
+                observable$ = this.stateSubject$.pipe(config.debounce ? debounceSync() : ( /**
+                 * @param {?} source$
+                 * @return {?}
+                 */function (source$) { return source$; }), operators.map(projector));
             }
             else {
-                // If there are multiple arguments, we're chaining selectors, so we need
+                // If there are multiple arguments, then we're aggregating selectors, so we need
                 // to take the combineLatest of them before calling the map function.
-                observable$ = rxjs.combineLatest(args).pipe(
-                // The most performant way to combine Observables avoiding unnecessary
-                // emissions and projector calls.
-                debounceSync(), operators.map(( /**
-                 * @param {?} args
+                observable$ = rxjs.combineLatest(observables).pipe(config.debounce ? debounceSync() : ( /**
+                 * @param {?} source$
                  * @return {?}
-                 */function (args) { return projector.apply(void 0, __spread(args)); })));
+                 */function (source$) { return source$; }), operators.map(( /**
+                 * @param {?} projectorArgs
+                 * @return {?}
+                 */function (projectorArgs) { return projector.apply(void 0, __spread(projectorArgs)); })));
             }
-            /** @type {?} */
-            var distinctSharedObservable$ = observable$.pipe(operators.distinctUntilChanged(), operators.shareReplay({
+            return (( /** @type {?} */(observable$))).pipe(operators.distinctUntilChanged(), operators.shareReplay({
                 refCount: true,
                 bufferSize: 1,
             }), operators.takeUntil(this.destroy$));
-            return distinctSharedObservable$;
         };
         /**
          * Creates an effect.
@@ -583,6 +596,40 @@
         ComponentStore.prototype.isInitialized;
         /** @type {?} */
         ComponentStore.prototype.state$;
+    }
+    /**
+     * @template O, R, ProjectorFn
+     * @param {?} args
+     * @return {?}
+     */
+    function processSelectorArgs(args) {
+        /** @type {?} */
+        var selectorArgs = Array.from(args);
+        // Assign default values.
+        /** @type {?} */
+        var config = { debounce: false };
+        /** @type {?} */
+        var projector;
+        // Last argument is either projector or config
+        /** @type {?} */
+        var projectorOrConfig = ( /** @type {?} */(selectorArgs.pop()));
+        if (typeof projectorOrConfig !== 'function') {
+            // We got the config as the last argument, replace any default values with it.
+            config = Object.assign(Object.assign({}, config), projectorOrConfig);
+            // Pop the next args, which would be the projector fn.
+            projector = ( /** @type {?} */(selectorArgs.pop()));
+        }
+        else {
+            projector = projectorOrConfig;
+        }
+        // The Observables to combine, if there are any.
+        /** @type {?} */
+        var observables = ( /** @type {?} */(selectorArgs));
+        return {
+            observables: observables,
+            projector: projector,
+            config: config,
+        };
     }
 
     /**

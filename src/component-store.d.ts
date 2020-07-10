@@ -8,6 +8,9 @@ export interface EffectReturnFn<T> {
     (): void;
     (t: T | Observable<T>): Subscription;
 }
+export interface SelectConfig {
+    debounce?: boolean;
+}
 export declare const initialStateToken: InjectionToken<unknown>;
 export declare class ComponentStore<T extends object> implements OnDestroy {
     private readonly destroySubject$;
@@ -48,17 +51,19 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
     /**
      * Creates a selector.
      *
-     * This supports chaining up to 4 selectors. More could be added as needed.
+     * This supports combining up to 4 selectors. More could be added as needed.
      *
      * @param projector A pure projection function that takes the current state and
      *   returns some new slice/projection of that state.
+     * @param config SelectConfig that changes the behavoir of selector, including
+     *   the debouncing of the values until the state is settled.
      * @return An observable of the projector results.
      */
-    select<R>(projector: (s: T) => R): Observable<R>;
-    select<R, S1>(s1: Observable<S1>, projector: (s1: S1) => R): Observable<R>;
-    select<R, S1, S2>(s1: Observable<S1>, s2: Observable<S2>, projector: (s1: S1, s2: S2) => R): Observable<R>;
-    select<R, S1, S2, S3>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, projector: (s1: S1, s2: S2, s3: S3) => R): Observable<R>;
-    select<R, S1, S2, S3, S4>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, s4: Observable<S4>, projector: (s1: S1, s2: S2, s3: S3, s4: S4) => R): Observable<R>;
+    select<R>(projector: (s: T) => R, config?: SelectConfig): Observable<R>;
+    select<R, S1>(s1: Observable<S1>, projector: (s1: S1) => R, config?: SelectConfig): Observable<R>;
+    select<R, S1, S2>(s1: Observable<S1>, s2: Observable<S2>, projector: (s1: S1, s2: S2) => R, config?: SelectConfig): Observable<R>;
+    select<R, S1, S2, S3>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, projector: (s1: S1, s2: S2, s3: S3) => R, config?: SelectConfig): Observable<R>;
+    select<R, S1, S2, S3, S4>(s1: Observable<S1>, s2: Observable<S2>, s3: Observable<S3>, s4: Observable<S4>, projector: (s1: S1, s2: S2, s3: S3, s4: S4) => R, config?: SelectConfig): Observable<R>;
     /**
      * Creates an effect.
      *
