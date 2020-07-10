@@ -331,7 +331,9 @@
                 error: ( /**
                  * @param {?} error
                  * @return {?}
-                 */function (error) { return observer.error(error); }),
+                 */function (error) {
+                    observer.error(error);
+                }),
                 next: ( /**
                  * @param {?} value
                  * @return {?}

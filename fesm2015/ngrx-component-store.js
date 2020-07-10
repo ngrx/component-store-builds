@@ -41,7 +41,9 @@ function debounceSync() {
              * @param {?} error
              * @return {?}
              */
-            (error) => observer.error(error)),
+            (error) => {
+                observer.error(error);
+            }),
             next: (/**
              * @param {?} value
              * @return {?}
