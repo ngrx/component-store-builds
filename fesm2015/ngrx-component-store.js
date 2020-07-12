@@ -1,5 +1,5 @@
 import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, scheduled, queueScheduler, throwError, combineLatest, Subject } from 'rxjs';
-import { concatMap, withLatestFrom, takeUntil, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import { concatMap, withLatestFrom, takeUntil, take, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { InjectionToken, Injectable, Optional, Inject } from '@angular/core';
 
 /**
@@ -102,6 +102,8 @@ class ComponentStore {
         this.destroy$ = this.destroySubject$.asObservable();
         this.stateSubject$ = new ReplaySubject(1);
         this.isInitialized = false;
+        this.notInitializedErrorMessage = `${this.constructor.name} has not been initialized yet. ` +
+            `Please make sure it is initialized before updating/getting.`;
         // Needs to be after destroy$ is declared because it's used in select.
         this.state$ = this.select((/**
          * @param {?} s
@@ -162,7 +164,7 @@ class ComponentStore {
                 ? // Push the value into queueScheduler
                     scheduled([value], queueScheduler).pipe(withLatestFrom(this.stateSubject$))
                 : // If state was not initialized, we'll throw an error.
-                    throwError(new Error(`${this.constructor.name} has not been initialized`)))), takeUntil(this.destroy$))
+                    throwError(new Error(this.notInitializedErrorMessage)))), takeUntil(this.destroy$))
                 .subscribe({
                 next: (/**
                  * @param {?} __0
@@ -217,6 +219,27 @@ class ComponentStore {
         else {
             this.updater((/** @type {?} */ (stateOrUpdaterFn)))();
         }
+    }
+    /**
+     * @protected
+     * @template R
+     * @param {?=} projector
+     * @return {?}
+     */
+    get(projector) {
+        if (!this.isInitialized) {
+            throw new Error(this.notInitializedErrorMessage);
+        }
+        /** @type {?} */
+        let value;
+        this.stateSubject$.pipe(take(1)).subscribe((/**
+         * @param {?} state
+         * @return {?}
+         */
+        (state) => {
+            value = projector ? projector(state) : state;
+        }));
+        return (/** @type {?} */ (value));
     }
     /**
      * @template O, R, ProjectorFn
@@ -315,6 +338,11 @@ if (false) {
      * @private
      */
     ComponentStore.prototype.isInitialized;
+    /**
+     * @type {?}
+     * @private
+     */
+    ComponentStore.prototype.notInitializedErrorMessage;
     /** @type {?} */
     ComponentStore.prototype.state$;
 }

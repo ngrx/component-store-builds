@@ -17,6 +17,7 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
     readonly destroy$: Observable<void>;
     private readonly stateSubject$;
     private isInitialized;
+    private notInitializedErrorMessage;
     readonly state$: Observable<T>;
     constructor(defaultState?: T);
     /** Completes all relevant Observable streams. */
@@ -48,6 +49,8 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      * updaterFn, returning such object.
      */
     setState(stateOrUpdaterFn: T | ((state: T) => T)): void;
+    protected get(): T;
+    protected get<R>(projector: (s: T) => R): R;
     /**
      * Creates a selector.
      *

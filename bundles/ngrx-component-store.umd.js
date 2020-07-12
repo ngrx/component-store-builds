@@ -385,6 +385,8 @@
             this.destroy$ = this.destroySubject$.asObservable();
             this.stateSubject$ = new rxjs.ReplaySubject(1);
             this.isInitialized = false;
+            this.notInitializedErrorMessage = this.constructor.name + " has not been initialized yet. " +
+                "Please make sure it is initialized before updating/getting.";
             // Needs to be after destroy$ is declared because it's used in select.
             this.state$ = this.select(( /**
              * @param {?} s
@@ -443,7 +445,7 @@
                     ? // Push the value into queueScheduler
                         rxjs.scheduled([value], rxjs.queueScheduler).pipe(operators.withLatestFrom(_this.stateSubject$))
                     : // If state was not initialized, we'll throw an error.
-                        rxjs.throwError(new Error(_this.constructor.name + " has not been initialized")); })), operators.takeUntil(_this.destroy$))
+                        rxjs.throwError(new Error(_this.notInitializedErrorMessage)); })), operators.takeUntil(_this.destroy$))
                     .subscribe({
                     next: ( /**
                      * @param {?} __0
@@ -497,6 +499,26 @@
             else {
                 this.updater(( /** @type {?} */(stateOrUpdaterFn)))();
             }
+        };
+        /**
+         * @protected
+         * @template R
+         * @param {?=} projector
+         * @return {?}
+         */
+        ComponentStore.prototype.get = function (projector) {
+            if (!this.isInitialized) {
+                throw new Error(this.notInitializedErrorMessage);
+            }
+            /** @type {?} */
+            var value;
+            this.stateSubject$.pipe(operators.take(1)).subscribe(( /**
+             * @param {?} state
+             * @return {?}
+             */function (state) {
+                value = projector ? projector(state) : state;
+            }));
+            return ( /** @type {?} */(value));
         };
         /**
          * @template O, R, ProjectorFn
@@ -596,6 +618,11 @@
          * @private
          */
         ComponentStore.prototype.isInitialized;
+        /**
+         * @type {?}
+         * @private
+         */
+        ComponentStore.prototype.notInitializedErrorMessage;
         /** @type {?} */
         ComponentStore.prototype.state$;
     }
