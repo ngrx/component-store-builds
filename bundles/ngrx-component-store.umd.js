@@ -364,13 +364,6 @@
     }
 
     /**
-     * Return type of the effect, that behaves differently based on whether the
-     * argument is passed to the callback.
-     * @record
-     * @template T
-     */
-    function EffectReturnFn() { }
-    /**
      * @record
      */
     function SelectConfig() { }
@@ -390,7 +383,7 @@
         function ComponentStore(defaultState) {
             // Should be used only in ngOnDestroy.
             this.destroySubject$ = new rxjs.ReplaySubject(1);
-            // Exposed to any extending Store to be used for the teardowns.
+            // Exposed to any extending Store to be used for the teardown.
             this.destroy$ = this.destroySubject$.asObservable();
             this.stateSubject$ = new rxjs.ReplaySubject(1);
             this.isInitialized = false;
@@ -427,7 +420,7 @@
          * current state and an argument object) and returns a new instance of the
          * state.
          * @return {?} A function that accepts one argument which is forwarded as the
-         *     second argument to `updaterFn`. Everytime this function is called
+         *     second argument to `updaterFn`. Every time this function is called
          *     subscribers will be notified of the state change.
          */
         ComponentStore.prototype.updater = function (updaterFn) {
@@ -569,7 +562,7 @@
          * Creates an effect.
          *
          * This effect is subscribed to for the life of the \@Component.
-         * @template V, R
+         * @template ProvidedType, OriginType, ObservableType, ReturnType
          * @param {?} generator A function that takes an origin Observable input and
          *     returns an Observable. The Observable that is returned will be
          *     subscribed to for the life of the component.
@@ -579,11 +572,11 @@
             var _this = this;
             /** @type {?} */
             var origin$ = new rxjs.Subject();
-            generator(origin$)
+            generator(( /** @type {?} */(origin$)))
                 // tied to the lifecycle 👇 of ComponentStore
                 .pipe(operators.takeUntil(this.destroy$))
                 .subscribe();
-            return ( /**
+            return ( /** @type {?} */((( /** @type {?} */((( /**
              * @param {?=} observableOrValue
              * @return {?}
              */function (observableOrValue) {
@@ -598,7 +591,7 @@
                     // any new 👇 value is pushed into a stream
                     origin$.next(value);
                 }));
-            });
+            })))))));
         };
         return ComponentStore;
     }());

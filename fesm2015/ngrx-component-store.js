@@ -72,13 +72,6 @@ function debounceSync() {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 /**
- * Return type of the effect, that behaves differently based on whether the
- * argument is passed to the callback.
- * @record
- * @template T
- */
-function EffectReturnFn() { }
-/**
  * @record
  */
 function SelectConfig() { }
@@ -98,7 +91,7 @@ class ComponentStore {
     constructor(defaultState) {
         // Should be used only in ngOnDestroy.
         this.destroySubject$ = new ReplaySubject(1);
-        // Exposed to any extending Store to be used for the teardowns.
+        // Exposed to any extending Store to be used for the teardown.
         this.destroy$ = this.destroySubject$.asObservable();
         this.stateSubject$ = new ReplaySubject(1);
         this.isInitialized = false;
@@ -136,7 +129,7 @@ class ComponentStore {
      * current state and an argument object) and returns a new instance of the
      * state.
      * @return {?} A function that accepts one argument which is forwarded as the
-     *     second argument to `updaterFn`. Everytime this function is called
+     *     second argument to `updaterFn`. Every time this function is called
      *     subscribers will be notified of the state change.
      */
     updater(updaterFn) {
@@ -280,7 +273,7 @@ class ComponentStore {
      * Creates an effect.
      *
      * This effect is subscribed to for the life of the \@Component.
-     * @template V, R
+     * @template ProvidedType, OriginType, ObservableType, ReturnType
      * @param {?} generator A function that takes an origin Observable input and
      *     returns an Observable. The Observable that is returned will be
      *     subscribed to for the life of the component.
@@ -289,11 +282,11 @@ class ComponentStore {
     effect(generator) {
         /** @type {?} */
         const origin$ = new Subject();
-        generator(origin$)
+        generator((/** @type {?} */ (origin$)))
             // tied to the lifecycle 👇 of ComponentStore
             .pipe(takeUntil(this.destroy$))
             .subscribe();
-        return (/**
+        return (/** @type {?} */ (((/** @type {?} */ (((/**
          * @param {?=} observableOrValue
          * @return {?}
          */
@@ -310,7 +303,7 @@ class ComponentStore {
                 // any new 👇 value is pushed into a stream
                 origin$.next(value);
             }));
-        });
+        })))))));
     }
 }
 ComponentStore.decorators = [

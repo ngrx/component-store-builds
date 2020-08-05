@@ -1,13 +1,5 @@
 import { Observable, Subscription } from 'rxjs';
 import { OnDestroy, InjectionToken } from '@angular/core';
-/**
- * Return type of the effect, that behaves differently based on whether the
- * argument is passed to the callback.
- */
-export interface EffectReturnFn<T> {
-    (): void;
-    (t: T | Observable<T>): Subscription;
-}
 export interface SelectConfig {
     debounce?: boolean;
 }
@@ -34,7 +26,7 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      * current state and an argument object) and returns a new instance of the
      * state.
      * @return A function that accepts one argument which is forwarded as the
-     *     second argument to `updaterFn`. Everytime this function is called
+     *     second argument to `updaterFn`. Every time this function is called
      *     subscribers will be notified of the state change.
      */
     updater<V>(updaterFn: (state: T, value: V) => T): unknown extends V ? () => void : (t: V | Observable<V>) => Subscription;
@@ -58,7 +50,7 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      *
      * @param projector A pure projection function that takes the current state and
      *   returns some new slice/projection of that state.
-     * @param config SelectConfig that changes the behavoir of selector, including
+     * @param config SelectConfig that changes the behavior of selector, including
      *   the debouncing of the values until the state is settled.
      * @return An observable of the projector results.
      */
@@ -76,5 +68,5 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      *     subscribed to for the life of the component.
      * @return A function that, when called, will trigger the origin Observable.
      */
-    effect<V, R = unknown>(generator: (origin$: Observable<V>) => Observable<R>): EffectReturnFn<V>;
+    effect<ProvidedType = void, OriginType extends Observable<ProvidedType> | unknown = Observable<ProvidedType>, ObservableType = OriginType extends Observable<infer A> ? A : never, ReturnType = ProvidedType | ObservableType extends void ? () => void : (observableOrValue: ObservableType | Observable<ObservableType>) => Subscription>(generator: (origin$: OriginType) => Observable<unknown>): ReturnType;
 }
