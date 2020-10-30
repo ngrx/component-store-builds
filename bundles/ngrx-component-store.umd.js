@@ -372,7 +372,7 @@
         SelectConfig.prototype.debounce;
     }
     /** @type {?} */
-    var initialStateToken = new core.InjectionToken('ComponentStore InitState');
+    var INITIAL_STATE_TOKEN = new core.InjectionToken('@ngrx/component-store Initial State');
     /**
      * @template T
      */
@@ -600,7 +600,7 @@
     ];
     /** @nocollapse */
     ComponentStore.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [initialStateToken,] }] }
+        { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [INITIAL_STATE_TOKEN,] }] }
     ]; };
     if (false) {
         /**
@@ -688,7 +688,7 @@
      */
 
     exports.ComponentStore = ComponentStore;
-    exports.initialStateToken = initialStateToken;
+    exports.INITIAL_STATE_TOKEN = INITIAL_STATE_TOKEN;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

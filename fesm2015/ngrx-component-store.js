@@ -80,7 +80,7 @@ if (false) {
     SelectConfig.prototype.debounce;
 }
 /** @type {?} */
-const initialStateToken = new InjectionToken('ComponentStore InitState');
+const INITIAL_STATE_TOKEN = new InjectionToken('@ngrx/component-store Initial State');
 /**
  * @template T
  */
@@ -311,7 +311,7 @@ ComponentStore.decorators = [
 ];
 /** @nocollapse */
 ComponentStore.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [initialStateToken,] }] }
+    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [INITIAL_STATE_TOKEN,] }] }
 ];
 if (false) {
     /**
@@ -398,5 +398,5 @@ function processSelectorArgs(args) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ComponentStore, initialStateToken };
+export { ComponentStore, INITIAL_STATE_TOKEN };
 //# sourceMappingURL=ngrx-component-store.js.map

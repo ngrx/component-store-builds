@@ -3,7 +3,7 @@ import { OnDestroy, InjectionToken } from '@angular/core';
 export interface SelectConfig {
     debounce?: boolean;
 }
-export declare const initialStateToken: InjectionToken<unknown>;
+export declare const INITIAL_STATE_TOKEN: InjectionToken<unknown>;
 export declare class ComponentStore<T extends object> implements OnDestroy {
     private readonly destroySubject$;
     readonly destroy$: Observable<void>;
