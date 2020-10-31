@@ -29,7 +29,7 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      *     second argument to `updaterFn`. Every time this function is called
      *     subscribers will be notified of the state change.
      */
-    updater<V>(updaterFn: (state: T, value: V) => T): unknown extends V ? () => void : (t: V | Observable<V>) => Subscription;
+    updater<ProvidedType = void, OriginType = ProvidedType, ValueType = OriginType, ReturnType = OriginType extends void ? () => void : (observableOrValue: ValueType | Observable<ValueType>) => Subscription>(updaterFn: (state: T, value: OriginType) => T): ReturnType;
     /**
      * Initializes state. If it was already initialized then it resets the
      * state.

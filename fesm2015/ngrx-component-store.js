@@ -124,7 +124,7 @@ class ComponentStore {
      * is initialized. If called with async Observable before initialization then
      * state will not be updated and subscription would be closed.
      *
-     * @template V
+     * @template ProvidedType, OriginType, ValueType, ReturnType
      * @param {?} updaterFn A static updater function that takes 2 parameters (the
      * current state and an argument object) and returns a new instance of the
      * state.
@@ -133,7 +133,7 @@ class ComponentStore {
      *     subscribers will be notified of the state change.
      */
     updater(updaterFn) {
-        return (/** @type {?} */ (((/**
+        return (/** @type {?} */ (((/** @type {?} */ (((/**
          * @param {?=} observableOrValue
          * @return {?}
          */
@@ -180,7 +180,7 @@ class ComponentStore {
                 throw /** @type {!Error} */ (initializationError);
             }
             return subscription;
-        }))));
+        })))))));
     }
     /**
      * Initializes state. If it was already initialized then it resets the
