@@ -1,5 +1,5 @@
-import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, scheduled, queueScheduler, throwError, combineLatest, Subject } from 'rxjs';
-import { concatMap, withLatestFrom, takeUntil, take, map, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, scheduled, queueScheduler, throwError, combineLatest, Subject, EMPTY } from 'rxjs';
+import { concatMap, withLatestFrom, takeUntil, take, map, distinctUntilChanged, shareReplay, tap, catchError } from 'rxjs/operators';
 import { InjectionToken, Injectable, Optional, Inject } from '@angular/core';
 
 /**
@@ -376,6 +376,51 @@ function processSelectorArgs(args) {
 
 /**
  * @fileoverview added by tsickle
+ * Generated from: src/tap-response.ts
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Handles the response in ComponentStore effects in a safe way, without
+ * additional boilerplate.
+ * It enforces that the error case is handled and that the effect would still be
+ * running should an error occur.
+ *
+ * Takes an optional third argument for a `complete` callback.
+ *
+ * ```typescript
+ * readonly dismissedAlerts = this.effect<Alert>(alert$ => {
+ *  return alert$.pipe(
+ *      concatMap(
+ *          (alert) => this.alertsService.dismissAlert(alert).pipe(
+ *              tapResponse(
+ *                 (dismissedAlert) => this.alertDismissed(dismissedAlert),
+ *                 (error) => this.logError(error),
+ *              ))));
+ *   });
+ * ```
+ * @template T
+ * @param {?} nextFn
+ * @param {?} errorFn
+ * @param {?=} completeFn
+ * @return {?}
+ */
+function tapResponse(nextFn, errorFn, completeFn) {
+    return (/**
+     * @param {?} source
+     * @return {?}
+     */
+    (source) => source.pipe(tap({
+        next: nextFn,
+        error: errorFn,
+        complete: completeFn,
+    }), catchError((/**
+     * @return {?}
+     */
+    () => EMPTY))));
+}
+
+/**
+ * @fileoverview added by tsickle
  * Generated from: src/index.ts
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
@@ -398,5 +443,5 @@ function processSelectorArgs(args) {
  * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { ComponentStore, INITIAL_STATE_TOKEN };
+export { ComponentStore, INITIAL_STATE_TOKEN, tapResponse };
 //# sourceMappingURL=ngrx-component-store.js.map

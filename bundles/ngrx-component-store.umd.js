@@ -665,6 +665,49 @@
 
     /**
      * @fileoverview added by tsickle
+     * Generated from: src/tap-response.ts
+     * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * Handles the response in ComponentStore effects in a safe way, without
+     * additional boilerplate.
+     * It enforces that the error case is handled and that the effect would still be
+     * running should an error occur.
+     *
+     * Takes an optional third argument for a `complete` callback.
+     *
+     * ```typescript
+     * readonly dismissedAlerts = this.effect<Alert>(alert$ => {
+     *  return alert$.pipe(
+     *      concatMap(
+     *          (alert) => this.alertsService.dismissAlert(alert).pipe(
+     *              tapResponse(
+     *                 (dismissedAlert) => this.alertDismissed(dismissedAlert),
+     *                 (error) => this.logError(error),
+     *              ))));
+     *   });
+     * ```
+     * @template T
+     * @param {?} nextFn
+     * @param {?} errorFn
+     * @param {?=} completeFn
+     * @return {?}
+     */
+    function tapResponse(nextFn, errorFn, completeFn) {
+        return ( /**
+         * @param {?} source
+         * @return {?}
+         */function (source) { return source.pipe(operators.tap({
+            next: nextFn,
+            error: errorFn,
+            complete: completeFn,
+        }), operators.catchError(( /**
+         * @return {?}
+         */function () { return rxjs.EMPTY; }))); });
+    }
+
+    /**
+     * @fileoverview added by tsickle
      * Generated from: src/index.ts
      * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
@@ -689,6 +732,7 @@
 
     exports.ComponentStore = ComponentStore;
     exports.INITIAL_STATE_TOKEN = INITIAL_STATE_TOKEN;
+    exports.tapResponse = tapResponse;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
