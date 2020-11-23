@@ -214,6 +214,27 @@ class ComponentStore {
         }
     }
     /**
+     * Patches the state with provided partial state.
+     *
+     * @throws Error if the state is not initialized.
+     * @param {?} partialStateOrUpdaterFn a partial state or a partial updater
+     * function that accepts the state and returns the partial state.
+     * @return {?}
+     */
+    patchState(partialStateOrUpdaterFn) {
+        this.setState((/**
+         * @param {?} state
+         * @return {?}
+         */
+        (state) => {
+            /** @type {?} */
+            const patchedState = typeof partialStateOrUpdaterFn === 'function'
+                ? partialStateOrUpdaterFn(state)
+                : partialStateOrUpdaterFn;
+            return Object.assign(Object.assign({}, state), patchedState);
+        }));
+    }
+    /**
      * @protected
      * @template R
      * @param {?=} projector

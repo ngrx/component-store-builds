@@ -503,6 +503,26 @@
             }
         };
         /**
+         * Patches the state with provided partial state.
+         *
+         * @throws Error if the state is not initialized.
+         * @param {?} partialStateOrUpdaterFn a partial state or a partial updater
+         * function that accepts the state and returns the partial state.
+         * @return {?}
+         */
+        ComponentStore.prototype.patchState = function (partialStateOrUpdaterFn) {
+            this.setState(( /**
+             * @param {?} state
+             * @return {?}
+             */function (state) {
+                /** @type {?} */
+                var patchedState = typeof partialStateOrUpdaterFn === 'function'
+                    ? partialStateOrUpdaterFn(state)
+                    : partialStateOrUpdaterFn;
+                return Object.assign(Object.assign({}, state), patchedState);
+            }));
+        };
+        /**
          * @protected
          * @template R
          * @param {?=} projector
