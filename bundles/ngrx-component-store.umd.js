@@ -543,7 +543,7 @@
             return ( /** @type {?} */(value));
         };
         /**
-         * @template O, R, ProjectorFn
+         * @template Selectors, Result, ProjectorFn
          * @param {...?} args
          * @return {?}
          */
@@ -573,7 +573,7 @@
                  * @return {?}
                  */function (projectorArgs) { return projector.apply(void 0, __spread(projectorArgs)); })));
             }
-            return (( /** @type {?} */(observable$))).pipe(operators.distinctUntilChanged(), operators.shareReplay({
+            return observable$.pipe(operators.distinctUntilChanged(), operators.shareReplay({
                 refCount: true,
                 bufferSize: 1,
             }), operators.takeUntil(this.destroy$));
@@ -649,7 +649,7 @@
         ComponentStore.prototype.state$;
     }
     /**
-     * @template O, R, ProjectorFn
+     * @template Selectors, Result, ProjectorFn
      * @param {?} args
      * @return {?}
      */

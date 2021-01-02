@@ -256,7 +256,7 @@ class ComponentStore {
         return (/** @type {?} */ (value));
     }
     /**
-     * @template O, R, ProjectorFn
+     * @template Selectors, Result, ProjectorFn
      * @param {...?} args
      * @return {?}
      */
@@ -285,7 +285,7 @@ class ComponentStore {
              */
             (projectorArgs) => projector(...projectorArgs))));
         }
-        return ((/** @type {?} */ (observable$))).pipe(distinctUntilChanged(), shareReplay({
+        return observable$.pipe(distinctUntilChanged(), shareReplay({
             refCount: true,
             bufferSize: 1,
         }), takeUntil(this.destroy$));
@@ -361,7 +361,7 @@ if (false) {
     ComponentStore.prototype.state$;
 }
 /**
- * @template O, R, ProjectorFn
+ * @template Selectors, Result, ProjectorFn
  * @param {?} args
  * @return {?}
  */
