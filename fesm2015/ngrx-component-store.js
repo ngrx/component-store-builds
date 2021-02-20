@@ -3,91 +3,60 @@ import { concatMap, withLatestFrom, takeUntil, take, map, distinctUntilChanged, 
 import { InjectionToken, Injectable, Optional, Inject } from '@angular/core';
 
 /**
- * @fileoverview added by tsickle
- * Generated from: src/debounce-sync.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @template T
- * @return {?}
+ * @license MIT License
+ *
+ * Copyright (c) 2017-2020 Nicholas Jamieson and contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 function debounceSync() {
-    return (/**
-     * @param {?} source
-     * @return {?}
-     */
-    (source) => new Observable((/**
-     * @param {?} observer
-     * @return {?}
-     */
-    (observer) => {
-        /** @type {?} */
+    return (source) => new Observable((observer) => {
         let actionSubscription;
-        /** @type {?} */
         let actionValue;
-        /** @type {?} */
         const rootSubscription = new Subscription();
         rootSubscription.add(source.subscribe({
-            complete: (/**
-             * @return {?}
-             */
-            () => {
+            complete: () => {
                 if (actionSubscription) {
                     observer.next(actionValue);
                 }
                 observer.complete();
-            }),
-            error: (/**
-             * @param {?} error
-             * @return {?}
-             */
-            (error) => {
+            },
+            error: (error) => {
                 observer.error(error);
-            }),
-            next: (/**
-             * @param {?} value
-             * @return {?}
-             */
-            (value) => {
+            },
+            next: (value) => {
                 actionValue = value;
                 if (!actionSubscription) {
-                    actionSubscription = asapScheduler.schedule((/**
-                     * @return {?}
-                     */
-                    () => {
+                    actionSubscription = asapScheduler.schedule(() => {
                         observer.next(actionValue);
                         actionSubscription = undefined;
-                    }));
+                    });
                     rootSubscription.add(actionSubscription);
                 }
-            }),
+            },
         }));
         return rootSubscription;
-    })));
+    });
 }
 
-/**
- * @fileoverview added by tsickle
- * Generated from: src/component-store.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * @record
- */
-function SelectConfig() { }
-if (false) {
-    /** @type {?|undefined} */
-    SelectConfig.prototype.debounce;
-}
-/** @type {?} */
 const INITIAL_STATE_TOKEN = new InjectionToken('@ngrx/component-store Initial State');
-/**
- * @template T
- */
 class ComponentStore {
-    /**
-     * @param {?=} defaultState
-     */
     constructor(defaultState) {
         // Should be used only in ngOnDestroy.
         this.destroySubject$ = new ReplaySubject(1);
@@ -98,20 +67,13 @@ class ComponentStore {
         this.notInitializedErrorMessage = `${this.constructor.name} has not been initialized yet. ` +
             `Please make sure it is initialized before updating/getting.`;
         // Needs to be after destroy$ is declared because it's used in select.
-        this.state$ = this.select((/**
-         * @param {?} s
-         * @return {?}
-         */
-        (s) => s));
+        this.state$ = this.select((s) => s);
         // State can be initialized either through constructor or setState.
         if (defaultState) {
             this.initState(defaultState);
         }
     }
-    /**
-     * Completes all relevant Observable streams.
-     * @return {?}
-     */
+    /** Completes all relevant Observable streams. */
     ngOnDestroy() {
         this.stateSubject$.complete();
         this.destroySubject$.next();
@@ -124,166 +86,103 @@ class ComponentStore {
      * is initialized. If called with async Observable before initialization then
      * state will not be updated and subscription would be closed.
      *
-     * @template ProvidedType, OriginType, ValueType, ReturnType
-     * @param {?} updaterFn A static updater function that takes 2 parameters (the
+     * @param updaterFn A static updater function that takes 2 parameters (the
      * current state and an argument object) and returns a new instance of the
      * state.
-     * @return {?} A function that accepts one argument which is forwarded as the
+     * @return A function that accepts one argument which is forwarded as the
      *     second argument to `updaterFn`. Every time this function is called
      *     subscribers will be notified of the state change.
      */
     updater(updaterFn) {
-        return (/** @type {?} */ (((/** @type {?} */ (((/**
-         * @param {?=} observableOrValue
-         * @return {?}
-         */
-        (observableOrValue) => {
-            /** @type {?} */
+        return ((observableOrValue) => {
             let initializationError;
             // We can receive either the value or an observable. In case it's a
             // simple value, we'll wrap it with `of` operator to turn it into
             // Observable.
-            /** @type {?} */
             const observable$ = isObservable(observableOrValue)
                 ? observableOrValue
                 : of(observableOrValue);
-            /** @type {?} */
             const subscription = observable$
-                .pipe(concatMap((/**
-             * @param {?} value
-             * @return {?}
-             */
-            (value) => this.isInitialized
+                .pipe(concatMap((value) => this.isInitialized
                 ? // Push the value into queueScheduler
                     scheduled([value], queueScheduler).pipe(withLatestFrom(this.stateSubject$))
                 : // If state was not initialized, we'll throw an error.
-                    throwError(new Error(this.notInitializedErrorMessage)))), takeUntil(this.destroy$))
+                    throwError(new Error(this.notInitializedErrorMessage))), takeUntil(this.destroy$))
                 .subscribe({
-                next: (/**
-                 * @param {?} __0
-                 * @return {?}
-                 */
-                ([value, currentState]) => {
-                    this.stateSubject$.next(updaterFn(currentState, (/** @type {?} */ (value))));
-                }),
-                error: (/**
-                 * @param {?} error
-                 * @return {?}
-                 */
-                (error) => {
+                next: ([value, currentState]) => {
+                    this.stateSubject$.next(updaterFn(currentState, value));
+                },
+                error: (error) => {
                     initializationError = error;
                     this.stateSubject$.error(error);
-                }),
+                },
             });
             if (initializationError) {
                 // prettier-ignore
                 throw /** @type {!Error} */ (initializationError);
             }
             return subscription;
-        })))))));
+        });
     }
     /**
      * Initializes state. If it was already initialized then it resets the
      * state.
-     * @private
-     * @param {?} state
-     * @return {?}
      */
     initState(state) {
-        scheduled([state], queueScheduler).subscribe((/**
-         * @param {?} s
-         * @return {?}
-         */
-        (s) => {
+        scheduled([state], queueScheduler).subscribe((s) => {
             this.isInitialized = true;
             this.stateSubject$.next(s);
-        }));
+        });
     }
     /**
      * Sets the state specific value.
-     * @param {?} stateOrUpdaterFn object of the same type as the state or an
+     * @param stateOrUpdaterFn object of the same type as the state or an
      * updaterFn, returning such object.
-     * @return {?}
      */
     setState(stateOrUpdaterFn) {
         if (typeof stateOrUpdaterFn !== 'function') {
             this.initState(stateOrUpdaterFn);
         }
         else {
-            this.updater((/** @type {?} */ (stateOrUpdaterFn)))();
+            this.updater(stateOrUpdaterFn)();
         }
     }
     /**
      * Patches the state with provided partial state.
      *
-     * @throws Error if the state is not initialized.
-     * @param {?} partialStateOrUpdaterFn a partial state or a partial updater
+     * @param partialStateOrUpdaterFn a partial state or a partial updater
      * function that accepts the state and returns the partial state.
-     * @return {?}
+     * @throws Error if the state is not initialized.
      */
     patchState(partialStateOrUpdaterFn) {
-        this.setState((/**
-         * @param {?} state
-         * @return {?}
-         */
-        (state) => {
-            /** @type {?} */
+        this.setState((state) => {
             const patchedState = typeof partialStateOrUpdaterFn === 'function'
                 ? partialStateOrUpdaterFn(state)
                 : partialStateOrUpdaterFn;
             return Object.assign(Object.assign({}, state), patchedState);
-        }));
+        });
     }
-    /**
-     * @protected
-     * @template R
-     * @param {?=} projector
-     * @return {?}
-     */
     get(projector) {
         if (!this.isInitialized) {
             throw new Error(this.notInitializedErrorMessage);
         }
-        /** @type {?} */
         let value;
-        this.stateSubject$.pipe(take(1)).subscribe((/**
-         * @param {?} state
-         * @return {?}
-         */
-        (state) => {
+        this.stateSubject$.pipe(take(1)).subscribe((state) => {
             value = projector ? projector(state) : state;
-        }));
-        return (/** @type {?} */ (value));
+        });
+        return value;
     }
-    /**
-     * @template Selectors, Result, ProjectorFn
-     * @param {...?} args
-     * @return {?}
-     */
     select(...args) {
         const { observables, projector, config } = processSelectorArgs(args);
-        /** @type {?} */
         let observable$;
         // If there are no Observables to combine, then we'll just map the value.
         if (observables.length === 0) {
-            observable$ = this.stateSubject$.pipe(config.debounce ? debounceSync() : (/**
-             * @param {?} source$
-             * @return {?}
-             */
-            (source$) => source$), map(projector));
+            observable$ = this.stateSubject$.pipe(config.debounce ? debounceSync() : (source$) => source$, map(projector));
         }
         else {
             // If there are multiple arguments, then we're aggregating selectors, so we need
             // to take the combineLatest of them before calling the map function.
-            observable$ = combineLatest(observables).pipe(config.debounce ? debounceSync() : (/**
-             * @param {?} source$
-             * @return {?}
-             */
-            (source$) => source$), map((/**
-             * @param {?} projectorArgs
-             * @return {?}
-             */
-            (projectorArgs) => projector(...projectorArgs))));
+            observable$ = combineLatest(observables).pipe(config.debounce ? debounceSync() : (source$) => source$, map((projectorArgs) => projector(...projectorArgs)));
         }
         return observable$.pipe(distinctUntilChanged(), shareReplay({
             refCount: true,
@@ -293,38 +192,27 @@ class ComponentStore {
     /**
      * Creates an effect.
      *
-     * This effect is subscribed to for the life of the \@Component.
-     * @template ProvidedType, OriginType, ObservableType, ReturnType
-     * @param {?} generator A function that takes an origin Observable input and
+     * This effect is subscribed to for the life of the @Component.
+     * @param generator A function that takes an origin Observable input and
      *     returns an Observable. The Observable that is returned will be
      *     subscribed to for the life of the component.
-     * @return {?} A function that, when called, will trigger the origin Observable.
+     * @return A function that, when called, will trigger the origin Observable.
      */
     effect(generator) {
-        /** @type {?} */
         const origin$ = new Subject();
-        generator((/** @type {?} */ (origin$)))
+        generator(origin$)
             // tied to the lifecycle 👇 of ComponentStore
             .pipe(takeUntil(this.destroy$))
             .subscribe();
-        return (/** @type {?} */ (((/** @type {?} */ (((/**
-         * @param {?=} observableOrValue
-         * @return {?}
-         */
-        (observableOrValue) => {
-            /** @type {?} */
+        return ((observableOrValue) => {
             const observable$ = isObservable(observableOrValue)
                 ? observableOrValue
                 : of(observableOrValue);
-            return observable$.pipe(takeUntil(this.destroy$)).subscribe((/**
-             * @param {?} value
-             * @return {?}
-             */
-            (value) => {
+            return observable$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
                 // any new 👇 value is pushed into a stream
                 origin$.next(value);
-            }));
-        })))))));
+            });
+        });
     }
 }
 ComponentStore.decorators = [
@@ -334,60 +222,24 @@ ComponentStore.decorators = [
 ComponentStore.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [INITIAL_STATE_TOKEN,] }] }
 ];
-if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentStore.prototype.destroySubject$;
-    /** @type {?} */
-    ComponentStore.prototype.destroy$;
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentStore.prototype.stateSubject$;
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentStore.prototype.isInitialized;
-    /**
-     * @type {?}
-     * @private
-     */
-    ComponentStore.prototype.notInitializedErrorMessage;
-    /** @type {?} */
-    ComponentStore.prototype.state$;
-}
-/**
- * @template Selectors, Result, ProjectorFn
- * @param {?} args
- * @return {?}
- */
 function processSelectorArgs(args) {
-    /** @type {?} */
     const selectorArgs = Array.from(args);
     // Assign default values.
-    /** @type {?} */
     let config = { debounce: false };
-    /** @type {?} */
     let projector;
     // Last argument is either projector or config
-    /** @type {?} */
-    const projectorOrConfig = (/** @type {?} */ (selectorArgs.pop()));
+    const projectorOrConfig = selectorArgs.pop();
     if (typeof projectorOrConfig !== 'function') {
         // We got the config as the last argument, replace any default values with it.
         config = Object.assign(Object.assign({}, config), projectorOrConfig);
         // Pop the next args, which would be the projector fn.
-        projector = (/** @type {?} */ (selectorArgs.pop()));
+        projector = selectorArgs.pop();
     }
     else {
         projector = projectorOrConfig;
     }
     // The Observables to combine, if there are any.
-    /** @type {?} */
-    const observables = (/** @type {?} */ (selectorArgs));
+    const observables = selectorArgs;
     return {
         observables,
         projector,
@@ -395,11 +247,6 @@ function processSelectorArgs(args) {
     };
 }
 
-/**
- * @fileoverview added by tsickle
- * Generated from: src/tap-response.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /**
  * Handles the response in ComponentStore effects in a safe way, without
  * additional boilerplate.
@@ -419,49 +266,23 @@ function processSelectorArgs(args) {
  *              ))));
  *   });
  * ```
- * @template T
- * @param {?} nextFn
- * @param {?} errorFn
- * @param {?=} completeFn
- * @return {?}
  */
 function tapResponse(nextFn, errorFn, completeFn) {
-    return (/**
-     * @param {?} source
-     * @return {?}
-     */
-    (source) => source.pipe(tap({
+    return (source) => source.pipe(tap({
         next: nextFn,
         error: errorFn,
         complete: completeFn,
-    }), catchError((/**
-     * @return {?}
-     */
-    () => EMPTY))));
+    }), catchError(() => EMPTY));
 }
 
 /**
- * @fileoverview added by tsickle
- * Generated from: src/index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * DO NOT EDIT
+ *
+ * This file is automatically generated at build
  */
 
 /**
- * @fileoverview added by tsickle
- * Generated from: public_api.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: index.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * Generated from: ngrx-component-store.ts
- * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * Generated bundle index. Do not edit.
  */
 
 export { ComponentStore, INITIAL_STATE_TOKEN, tapResponse };
