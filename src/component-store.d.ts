@@ -52,7 +52,7 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      * function that accepts the state and returns the partial state.
      * @throws Error if the state is not initialized.
      */
-    patchState(partialStateOrUpdaterFn: Partial<T> | ((state: T) => Partial<T>)): void;
+    patchState(partialStateOrUpdaterFn: Partial<T> | Observable<Partial<T>> | ((state: T) => Partial<T>)): void;
     protected get(): T;
     protected get<R>(projector: (s: T) => R): R;
     /**

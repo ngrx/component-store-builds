@@ -461,12 +461,10 @@
          * @throws Error if the state is not initialized.
          */
         ComponentStore.prototype.patchState = function (partialStateOrUpdaterFn) {
-            this.setState(function (state) {
-                var patchedState = typeof partialStateOrUpdaterFn === 'function'
-                    ? partialStateOrUpdaterFn(state)
-                    : partialStateOrUpdaterFn;
-                return Object.assign(Object.assign({}, state), patchedState);
-            });
+            var patchedState = typeof partialStateOrUpdaterFn === 'function'
+                ? partialStateOrUpdaterFn(this.get())
+                : partialStateOrUpdaterFn;
+            this.updater(function (state, partialState) { return (Object.assign(Object.assign({}, state), partialState)); })(patchedState);
         };
         ComponentStore.prototype.get = function (projector) {
             if (!this.isInitialized) {

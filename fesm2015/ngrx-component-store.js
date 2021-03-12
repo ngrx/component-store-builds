@@ -155,12 +155,10 @@ class ComponentStore {
      * @throws Error if the state is not initialized.
      */
     patchState(partialStateOrUpdaterFn) {
-        this.setState((state) => {
-            const patchedState = typeof partialStateOrUpdaterFn === 'function'
-                ? partialStateOrUpdaterFn(state)
-                : partialStateOrUpdaterFn;
-            return Object.assign(Object.assign({}, state), patchedState);
-        });
+        const patchedState = typeof partialStateOrUpdaterFn === 'function'
+            ? partialStateOrUpdaterFn(this.get())
+            : partialStateOrUpdaterFn;
+        this.updater((state, partialState) => (Object.assign(Object.assign({}, state), partialState)))(patchedState);
     }
     get(projector) {
         if (!this.isInitialized) {
