@@ -110,6 +110,7 @@ class ComponentStore {
                     throwError(new Error(this.notInitializedErrorMessage))), takeUntil(this.destroy$))
                 .subscribe({
                 next: ([value, currentState]) => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     this.stateSubject$.next(updaterFn(currentState, value));
                 },
                 error: (error) => {
@@ -168,6 +169,7 @@ class ComponentStore {
         this.stateSubject$.pipe(take(1)).subscribe((state) => {
             value = projector ? projector(state) : state;
         });
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return value;
     }
     select(...args) {

@@ -426,6 +426,7 @@
                     .subscribe({
                     next: function (_a) {
                         var _b = __read(_a, 2), value = _b[0], currentState = _b[1];
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         _this.stateSubject$.next(updaterFn(currentState, value));
                     },
                     error: function (error) {
@@ -485,6 +486,7 @@
             this.stateSubject$.pipe(operators.take(1)).subscribe(function (state) {
                 value = projector ? projector(state) : state;
             });
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return value;
         };
         ComponentStore.prototype.select = function () {
