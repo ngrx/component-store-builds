@@ -14,9 +14,9 @@ import { Observable } from 'rxjs';
  *          (alert) => this.alertsService.dismissAlert(alert).pipe(
  *              tapResponse(
  *                 (dismissedAlert) => this.alertDismissed(dismissedAlert),
- *                 (error) => this.logError(error),
+ *                 (error: { message: string }) => this.logError(error.message),
  *              ))));
  *   });
  * ```
  */
-export declare function tapResponse<T>(nextFn: (next: T) => void, errorFn: (error: unknown) => void, completeFn?: () => void): (source: Observable<T>) => Observable<T>;
+export declare function tapResponse<T>(nextFn: (next: T) => void, errorFn: <E = unknown>(error: E) => void, completeFn?: () => void): (source: Observable<T>) => Observable<T>;

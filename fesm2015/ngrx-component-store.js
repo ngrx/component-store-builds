@@ -262,7 +262,7 @@ function processSelectorArgs(args) {
  *          (alert) => this.alertsService.dismissAlert(alert).pipe(
  *              tapResponse(
  *                 (dismissedAlert) => this.alertDismissed(dismissedAlert),
- *                 (error) => this.logError(error),
+ *                 (error: { message: string }) => this.logError(error.message),
  *              ))));
  *   });
  * ```
