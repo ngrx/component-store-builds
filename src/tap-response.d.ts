@@ -19,4 +19,4 @@ import { Observable } from 'rxjs';
  *   });
  * ```
  */
-export declare function tapResponse<T>(nextFn: (next: T) => void, errorFn: <E = unknown>(error: E) => void, completeFn?: () => void): (source: Observable<T>) => Observable<T>;
+export declare function tapResponse<T, E = unknown>(nextFn: (next: T) => void, errorFn: (error: E) => void, completeFn?: () => void): (source: Observable<T>) => Observable<T>;
