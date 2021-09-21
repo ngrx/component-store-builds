@@ -215,10 +215,17 @@ class ComponentStore {
         });
     }
 }
+/** @type {!Array<{type: !Function, args: (undefined|!Array<?>)}>} */
 ComponentStore.decorators = [
     { type: Injectable }
 ];
-/** @nocollapse */
+/**
+ * @type {function(): !Array<(null|{
+ *   type: ?,
+ *   decorators: (undefined|!Array<{type: !Function, args: (undefined|!Array<?>)}>),
+ * })>}
+ * @nocollapse
+ */
 ComponentStore.ctorParameters = () => [
     { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [INITIAL_STATE_TOKEN,] }] }
 ];

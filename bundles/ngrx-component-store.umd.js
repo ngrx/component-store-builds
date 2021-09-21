@@ -538,10 +538,17 @@
         };
         return ComponentStore;
     }());
+    /** @type {!Array<{type: !Function, args: (undefined|!Array<?>)}>} */
     ComponentStore.decorators = [
         { type: core.Injectable }
     ];
-    /** @nocollapse */
+    /**
+     * @type {function(): !Array<(null|{
+     *   type: ?,
+     *   decorators: (undefined|!Array<{type: !Function, args: (undefined|!Array<?>)}>),
+     * })>}
+     * @nocollapse
+     */
     ComponentStore.ctorParameters = function () { return [
         { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [INITIAL_STATE_TOKEN,] }] }
     ]; };
