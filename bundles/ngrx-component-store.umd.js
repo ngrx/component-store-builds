@@ -2,7 +2,29 @@
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('rxjs'), require('rxjs/operators'), require('@angular/core')) :
     typeof define === 'function' && define.amd ? define('@ngrx/component-store', ['exports', 'rxjs', 'rxjs/operators', '@angular/core'], factory) :
     (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory((global.ngrx = global.ngrx || {}, global.ngrx['component-store'] = {}), global.rxjs, global.rxjs.operators, global.ng.core));
-}(this, (function (exports, rxjs, operators, core) { 'use strict';
+}(this, (function (exports, rxjs, operators, i0) { 'use strict';
+
+    function _interopNamespace(e) {
+        if (e && e.__esModule) return e;
+        var n = Object.create(null);
+        if (e) {
+            Object.keys(e).forEach(function (k) {
+                if (k !== 'default') {
+                    var d = Object.getOwnPropertyDescriptor(e, k);
+                    Object.defineProperty(n, k, d.get ? d : {
+                        enumerable: true,
+                        get: function () {
+                            return e[k];
+                        }
+                    });
+                }
+            });
+        }
+        n['default'] = e;
+        return Object.freeze(n);
+    }
+
+    var i0__namespace = /*#__PURE__*/_interopNamespace(i0);
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -230,10 +252,16 @@
                 r[k] = a[j];
         return r;
     }
-    function __spreadArray(to, from) {
-        for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-            to[j] = from[i];
-        return to;
+    function __spreadArray(to, from, pack) {
+        if (pack || arguments.length === 2)
+            for (var i = 0, l = from.length, ar; i < l; i++) {
+                if (ar || !(i in from)) {
+                    if (!ar)
+                        ar = Array.prototype.slice.call(from, 0, i);
+                    ar[i] = from[i];
+                }
+            }
+        return to.concat(ar || Array.prototype.slice.call(from));
     }
     function __await(v) {
         return this instanceof __await ? (this.v = v, this) : new __await(v);
@@ -369,7 +397,7 @@
         }); };
     }
 
-    var INITIAL_STATE_TOKEN = new core.InjectionToken('@ngrx/component-store Initial State');
+    var INITIAL_STATE_TOKEN = new i0.InjectionToken('@ngrx/component-store Initial State');
     var ComponentStore = /** @class */ (function () {
         function ComponentStore(defaultState) {
             // Should be used only in ngOnDestroy.
@@ -538,20 +566,18 @@
         };
         return ComponentStore;
     }());
-    /** @type {!Array<{type: !Function, args: (undefined|!Array<?>)}>} */
-    ComponentStore.decorators = [
-        { type: core.Injectable }
-    ];
-    /**
-     * @type {function(): !Array<(null|{
-     *   type: ?,
-     *   decorators: (undefined|!Array<{type: !Function, args: (undefined|!Array<?>)}>),
-     * })>}
-     * @nocollapse
-     */
-    ComponentStore.ctorParameters = function () { return [
-        { type: undefined, decorators: [{ type: core.Optional }, { type: core.Inject, args: [INITIAL_STATE_TOKEN,] }] }
-    ]; };
+    /** @nocollapse */ ComponentStore.ɵfac = i0__namespace.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0__namespace, type: ComponentStore, deps: [{ token: INITIAL_STATE_TOKEN, optional: true }], target: i0__namespace.ɵɵFactoryTarget.Injectable });
+    /** @nocollapse */ ComponentStore.ɵprov = i0__namespace.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0__namespace, type: ComponentStore });
+    i0__namespace.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0__namespace, type: ComponentStore, decorators: [{
+                type: i0.Injectable
+            }], ctorParameters: function () {
+            return [{ type: undefined, decorators: [{
+                            type: i0.Optional
+                        }, {
+                            type: i0.Inject,
+                            args: [INITIAL_STATE_TOKEN]
+                        }] }];
+        } });
     function processSelectorArgs(args) {
         var selectorArgs = Array.from(args);
         // Assign default values.

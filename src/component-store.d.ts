@@ -1,5 +1,6 @@
 import { Observable, Subscription } from 'rxjs';
 import { OnDestroy, InjectionToken } from '@angular/core';
+import * as i0 from "@angular/core";
 export interface SelectConfig {
     debounce?: boolean;
 }
@@ -81,4 +82,6 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      * @return A function that, when called, will trigger the origin Observable.
      */
     effect<ProvidedType = void, OriginType extends Observable<ProvidedType> | unknown = Observable<ProvidedType>, ObservableType = OriginType extends Observable<infer A> ? A : never, ReturnType = ProvidedType | ObservableType extends void ? () => void : (observableOrValue: ObservableType | Observable<ObservableType>) => Subscription>(generator: (origin$: OriginType) => Observable<unknown>): ReturnType;
+    static ɵfac: i0.ɵɵFactoryDeclaration<ComponentStore<any>, [{ optional: true; }]>;
+    static ɵprov: i0.ɵɵInjectableDeclaration<ComponentStore<any>>;
 }

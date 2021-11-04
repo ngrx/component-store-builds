@@ -1,5 +1,6 @@
 import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, scheduled, queueScheduler, throwError, combineLatest, Subject, EMPTY } from 'rxjs';
 import { concatMap, withLatestFrom, takeUntil, take, map, distinctUntilChanged, shareReplay, tap, catchError } from 'rxjs/operators';
+import * as i0 from '@angular/core';
 import { InjectionToken, Injectable, Optional, Inject } from '@angular/core';
 
 /**
@@ -215,20 +216,16 @@ class ComponentStore {
         });
     }
 }
-/** @type {!Array<{type: !Function, args: (undefined|!Array<?>)}>} */
-ComponentStore.decorators = [
-    { type: Injectable }
-];
-/**
- * @type {function(): !Array<(null|{
- *   type: ?,
- *   decorators: (undefined|!Array<{type: !Function, args: (undefined|!Array<?>)}>),
- * })>}
- * @nocollapse
- */
-ComponentStore.ctorParameters = () => [
-    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [INITIAL_STATE_TOKEN,] }] }
-];
+/** @nocollapse */ ComponentStore.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0, type: ComponentStore, deps: [{ token: INITIAL_STATE_TOKEN, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
+/** @nocollapse */ ComponentStore.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0, type: ComponentStore });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0, type: ComponentStore, decorators: [{
+            type: Injectable
+        }], ctorParameters: function () { return [{ type: undefined, decorators: [{
+                    type: Optional
+                }, {
+                    type: Inject,
+                    args: [INITIAL_STATE_TOKEN]
+                }] }]; } });
 function processSelectorArgs(args) {
     const selectorArgs = Array.from(args);
     // Assign default values.
