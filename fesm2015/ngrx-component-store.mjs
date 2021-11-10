@@ -216,16 +216,18 @@ class ComponentStore {
         });
     }
 }
-/** @nocollapse */ ComponentStore.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0, type: ComponentStore, deps: [{ token: INITIAL_STATE_TOKEN, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
-/** @nocollapse */ ComponentStore.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0, type: ComponentStore });
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "12.2.6", ngImport: i0, type: ComponentStore, decorators: [{
+/** @nocollapse */ /** @nocollapse */ ComponentStore.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "13.0.0", ngImport: i0, type: ComponentStore, deps: [{ token: INITIAL_STATE_TOKEN, optional: true }], target: i0.ɵɵFactoryTarget.Injectable });
+/** @nocollapse */ /** @nocollapse */ ComponentStore.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "13.0.0", ngImport: i0, type: ComponentStore });
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "13.0.0", ngImport: i0, type: ComponentStore, decorators: [{
             type: Injectable
-        }], ctorParameters: function () { return [{ type: undefined, decorators: [{
-                    type: Optional
-                }, {
-                    type: Inject,
-                    args: [INITIAL_STATE_TOKEN]
-                }] }]; } });
+        }], ctorParameters: function () {
+        return [{ type: undefined, decorators: [{
+                        type: Optional
+                    }, {
+                        type: Inject,
+                        args: [INITIAL_STATE_TOKEN]
+                    }] }];
+    } });
 function processSelectorArgs(args) {
     const selectorArgs = Array.from(args);
     // Assign default values.
@@ -290,4 +292,4 @@ function tapResponse(nextFn, errorFn, completeFn) {
  */
 
 export { ComponentStore, INITIAL_STATE_TOKEN, tapResponse };
-//# sourceMappingURL=ngrx-component-store.js.map
+//# sourceMappingURL=ngrx-component-store.mjs.map

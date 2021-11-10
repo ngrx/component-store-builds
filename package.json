@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/ngrx/platform#readme",
   "peerDependencies": {
-    "@angular/core": "^13.0.0-rc.0",
+    "@angular/core": "^13.0.0",
     "rxjs": "^6.5.3 || ^7.4.0"
   },
   "schematics": "./schematics/collection.json",
@@ -44,10 +44,23 @@
   "dependencies": {
     "tslib": "^2.0.0"
   },
-  "main": "bundles/ngrx-component-store.umd.js",
-  "module": "fesm2015/ngrx-component-store.js",
-  "es2015": "fesm2015/ngrx-component-store.js",
-  "esm2015": "esm2015/ngrx-component-store.js",
-  "fesm2015": "fesm2015/ngrx-component-store.js",
-  "typings": "ngrx-component-store.d.ts"
+  "module": "fesm2015/ngrx-component-store.mjs",
+  "es2020": "fesm2020/ngrx-component-store.mjs",
+  "esm2020": "esm2020/ngrx-component-store.mjs",
+  "fesm2020": "fesm2020/ngrx-component-store.mjs",
+  "fesm2015": "fesm2015/ngrx-component-store.mjs",
+  "typings": "ngrx-component-store.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./ngrx-component-store.d.ts",
+      "esm2020": "./esm2020/ngrx-component-store.mjs",
+      "es2020": "./fesm2020/ngrx-component-store.mjs",
+      "es2015": "./fesm2015/ngrx-component-store.mjs",
+      "node": "./fesm2015/ngrx-component-store.mjs",
+      "default": "./fesm2020/ngrx-component-store.mjs"
+    }
+  }
 }
