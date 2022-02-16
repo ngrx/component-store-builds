@@ -108,7 +108,7 @@ class ComponentStore {
                 ? // Push the value into queueScheduler
                     scheduled([value], queueScheduler).pipe(withLatestFrom(this.stateSubject$))
                 : // If state was not initialized, we'll throw an error.
-                    throwError(() => new Error(this.notInitializedErrorMessage))), takeUntil(this.destroy$))
+                    throwError(new Error(this.notInitializedErrorMessage))), takeUntil(this.destroy$))
                 .subscribe({
                 next: ([value, currentState]) => {
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
