@@ -178,7 +178,7 @@ class ComponentStore {
         let observable$;
         // If there are no Observables to combine, then we'll just map the value.
         if (observables.length === 0) {
-            observable$ = this.stateSubject$.pipe(config.debounce ? debounceSync() : (source$) => source$, map(projector));
+            observable$ = this.stateSubject$.pipe(config.debounce ? debounceSync() : (source$) => source$, map((state) => projector(state)));
         }
         else {
             // If there are multiple arguments, then we're aggregating selectors, so we need
