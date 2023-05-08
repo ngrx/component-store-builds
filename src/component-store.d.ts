@@ -1,21 +1,31 @@
-import { Observable, Subscription } from 'rxjs';
-import { OnDestroy, InjectionToken } from '@angular/core';
+import { Observable, Subscription, ObservedValueOf } from 'rxjs';
+import { OnDestroy, InjectionToken, Signal, type ValueEqualityFn } from '@angular/core';
 import * as i0 from "@angular/core";
 export interface SelectConfig {
     debounce?: boolean;
 }
 export declare const INITIAL_STATE_TOKEN: InjectionToken<unknown>;
-export declare type SelectorResults<Selectors extends Observable<unknown>[]> = {
+export type SelectorResults<Selectors extends Observable<unknown>[]> = {
     [Key in keyof Selectors]: Selectors[Key] extends Observable<infer U> ? U : never;
 };
-export declare type Projector<Selectors extends Observable<unknown>[], Result> = (...args: SelectorResults<Selectors>) => Result;
+export type Projector<Selectors extends Observable<unknown>[], Result> = (...args: SelectorResults<Selectors>) => Result;
+type SignalsProjector<Signals extends Signal<unknown>[], Result> = (...values: {
+    [Key in keyof Signals]: Signals[Key] extends Signal<infer Value> ? Value : never;
+}) => Result;
+interface SelectSignalOptions<T> {
+    /**
+     * A comparison function which defines equality for select results.
+     */
+    equal?: ValueEqualityFn<T>;
+}
 export declare class ComponentStore<T extends object> implements OnDestroy {
     private readonly destroySubject$;
     readonly destroy$: Observable<void>;
     private readonly stateSubject$;
     private isInitialized;
-    private notInitializedErrorMessage;
     readonly state$: Observable<T>;
+    readonly state: Signal<T>;
+    private ɵhasProvider;
     constructor(defaultState?: T);
     /** Completes all relevant Observable streams. */
     ngOnDestroy(): void;
@@ -66,12 +76,34 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      * @return An observable of the projector results.
      */
     select<Result>(projector: (s: T) => Result, config?: SelectConfig): Observable<Result>;
-    select<Selectors extends Observable<unknown>[], Result>(...args: [...selectors: Selectors, projector: Projector<Selectors, Result>]): Observable<Result>;
-    select<Selectors extends Observable<unknown>[], Result>(...args: [
+    select<SelectorsObject extends Record<string, Observable<unknown>>>(selectorsObject: SelectorsObject, config?: SelectConfig): Observable<{
+        [K in keyof SelectorsObject]: ObservedValueOf<SelectorsObject[K]>;
+    }>;
+    select<Selectors extends Observable<unknown>[], Result>(...selectorsWithProjector: [
+        ...selectors: Selectors,
+        projector: Projector<Selectors, Result>
+    ]): Observable<Result>;
+    select<Selectors extends Observable<unknown>[], Result>(...selectorsWithProjectorAndConfig: [
         ...selectors: Selectors,
         projector: Projector<Selectors, Result>,
         config: SelectConfig
     ]): Observable<Result>;
+    /**
+     * Creates a signal from the provided state projector function.
+     */
+    selectSignal<Result>(projector: (state: T) => Result, options?: SelectSignalOptions<Result>): Signal<Result>;
+    /**
+     * Creates a signal by combining provided signals.
+     */
+    selectSignal<Signals extends Signal<unknown>[], Result>(...args: [...signals: Signals, projector: SignalsProjector<Signals, Result>]): Signal<Result>;
+    /**
+     * Creates a signal by combining provided signals.
+     */
+    selectSignal<Signals extends Signal<unknown>[], Result>(...args: [
+        ...signals: Signals,
+        projector: SignalsProjector<Signals, Result>,
+        options: SelectSignalOptions<Result>
+    ]): Signal<Result>;
     /**
      * Creates an effect.
      *
@@ -81,7 +113,14 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      *     subscribed to for the life of the component.
      * @return A function that, when called, will trigger the origin Observable.
      */
-    effect<ProvidedType = void, OriginType extends Observable<ProvidedType> | unknown = Observable<ProvidedType>, ObservableType = OriginType extends Observable<infer A> ? A : never, ReturnType = ProvidedType | ObservableType extends void ? () => void : (observableOrValue: ObservableType | Observable<ObservableType>) => Subscription>(generator: (origin$: OriginType) => Observable<unknown>): ReturnType;
+    effect<ProvidedType = void, OriginType extends Observable<ProvidedType> | unknown = Observable<ProvidedType>, ObservableType = OriginType extends Observable<infer A> ? A : never, ReturnType = ProvidedType | ObservableType extends void ? (observableOrValue?: ObservableType | Observable<ObservableType>) => Subscription : (observableOrValue: ObservableType | Observable<ObservableType>) => Subscription>(generator: (origin$: OriginType) => Observable<unknown>): ReturnType;
+    /**
+     * Used to check if lifecycle hooks are defined
+     * but not used with provideComponentStore()
+     */
+    private checkProviderForHooks;
+    private assertStateIsInitialized;
     static ɵfac: i0.ɵɵFactoryDeclaration<ComponentStore<any>, [{ optional: true; }]>;
     static ɵprov: i0.ɵɵInjectableDeclaration<ComponentStore<any>>;
 }
+export {};
