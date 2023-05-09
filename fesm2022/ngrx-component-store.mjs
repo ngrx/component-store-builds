@@ -284,28 +284,23 @@ class ComponentStore {
         }), takeUntil(this.destroy$));
     }
     selectSignal(...args) {
-        if (args.length === 1) {
-            const projector = args[0];
-            return computed(() => projector(this.state()));
-        }
-        const optionsOrProjector = args[args.length - 1];
-        if (typeof optionsOrProjector === 'function') {
-            const signals = args.slice(0, -1);
-            return computed(() => {
+        const selectSignalArgs = [...args];
+        const defaultEqualityFn = (previous, current) => previous === current;
+        const options = typeof selectSignalArgs[args.length - 1] === 'object'
+            ? {
+                equal: selectSignalArgs.pop().equal ||
+                    defaultEqualityFn,
+            }
+            : { equal: defaultEqualityFn };
+        const projector = selectSignalArgs.pop();
+        const signals = selectSignalArgs;
+        const computation = signals.length === 0
+            ? () => projector(this.state())
+            : () => {
                 const values = signals.map((signal) => signal());
-                return optionsOrProjector(...values);
-            });
-        }
-        if (args.length === 2) {
-            const projector = args[0];
-            return computed(() => projector(this.state()), optionsOrProjector);
-        }
-        const signals = args.slice(0, -2);
-        const projector = args[args.length - 2];
-        return computed(() => {
-            const values = signals.map((signal) => signal());
-            return projector(...values);
-        }, optionsOrProjector);
+                return projector(...values);
+            };
+        return computed(computation, options);
     }
     /**
      * Creates an effect.
