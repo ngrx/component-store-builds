@@ -1,8 +1,9 @@
 import { Observable, Subscription, ObservedValueOf } from 'rxjs';
 import { OnDestroy, InjectionToken, Signal, type ValueEqualityFn } from '@angular/core';
 import * as i0 from "@angular/core";
-export interface SelectConfig {
+export interface SelectConfig<T = unknown> {
     debounce?: boolean;
+    equal?: ValueEqualityFn<T>;
 }
 export declare const INITIAL_STATE_TOKEN: InjectionToken<unknown>;
 export type SelectorResults<Selectors extends Observable<unknown>[]> = {
@@ -75,8 +76,10 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
      *   the debouncing of the values until the state is settled.
      * @return An observable of the projector results.
      */
-    select<Result>(projector: (s: T) => Result, config?: SelectConfig): Observable<Result>;
-    select<SelectorsObject extends Record<string, Observable<unknown>>>(selectorsObject: SelectorsObject, config?: SelectConfig): Observable<{
+    select<Result>(projector: (s: T) => Result, config?: SelectConfig<Result>): Observable<Result>;
+    select<SelectorsObject extends Record<string, Observable<unknown>>>(selectorsObject: SelectorsObject, config?: SelectConfig<{
+        [K in keyof SelectorsObject]: ObservedValueOf<SelectorsObject[K]>;
+    }>): Observable<{
         [K in keyof SelectorsObject]: ObservedValueOf<SelectorsObject[K]>;
     }>;
     select<Selectors extends Observable<unknown>[], Result>(...selectorsWithProjector: [
@@ -86,7 +89,7 @@ export declare class ComponentStore<T extends object> implements OnDestroy {
     select<Selectors extends Observable<unknown>[], Result>(...selectorsWithProjectorAndConfig: [
         ...selectors: Selectors,
         projector: Projector<Selectors, Result>,
-        config: SelectConfig
+        config: SelectConfig<Result>
     ]): Observable<Result>;
     /**
      * Creates a signal from the provided state projector function.

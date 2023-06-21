@@ -278,7 +278,7 @@ class ComponentStore {
                 0 && Array.isArray(projectorArgs)
                 ? projector(...projectorArgs)
                 : projector(projectorArgs))
-            : noopOperator()), distinctUntilChanged(), shareReplay({
+            : noopOperator()), distinctUntilChanged(config.equal), shareReplay({
             refCount: true,
             bufferSize: 1,
         }), takeUntil(this.destroy$));
@@ -366,8 +366,12 @@ i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "16.0.0", ngImpor
                 }] }]; } });
 function processSelectorArgs(args) {
     const selectorArgs = Array.from(args);
+    const defaultEqualityFn = (previous, current) => previous === current;
     // Assign default values.
-    let config = { debounce: false };
+    let config = {
+        debounce: false,
+        equal: defaultEqualityFn,
+    };
     // Last argument is either config or projector or selectorsObject
     if (isSelectConfig(selectorArgs[selectorArgs.length - 1])) {
         config = { ...config, ...selectorArgs.pop() };
@@ -391,7 +395,9 @@ function processSelectorArgs(args) {
     };
 }
 function isSelectConfig(arg) {
-    return typeof arg.debounce !== 'undefined';
+    const typedArg = arg;
+    return (typeof typedArg.debounce !== 'undefined' ||
+        typeof typedArg.equal !== 'undefined');
 }
 function hasProjectFnOnly(observablesOrSelectorsObject, projector) {
     return (Array.isArray(observablesOrSelectorsObject) &&
