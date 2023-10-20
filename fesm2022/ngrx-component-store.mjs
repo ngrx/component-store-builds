@@ -285,13 +285,9 @@ class ComponentStore {
     }
     selectSignal(...args) {
         const selectSignalArgs = [...args];
-        const defaultEqualityFn = (previous, current) => previous === current;
         const options = typeof selectSignalArgs[args.length - 1] === 'object'
-            ? {
-                equal: selectSignalArgs.pop().equal ||
-                    defaultEqualityFn,
-            }
-            : { equal: defaultEqualityFn };
+            ? selectSignalArgs.pop()
+            : {};
         const projector = selectSignalArgs.pop();
         const signals = selectSignalArgs;
         const computation = signals.length === 0
