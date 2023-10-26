@@ -1,3 +1,3 @@
 export * from './component-store';
-export * from './tap-response';
+export { tapResponse } from '@ngrx/operators';
 export { provideComponentStore, OnStateInit, OnStoreInit, } from './lifecycle_hooks';
