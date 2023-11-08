@@ -1,4 +1,4 @@
-import { Observable, Subscription, asapScheduler, ReplaySubject, isObservable, of, queueScheduler, EMPTY, throwError, scheduled, combineLatest, Subject } from 'rxjs';
+import { Subscription, asapScheduler, Observable, ReplaySubject, isObservable, of, queueScheduler, EMPTY, throwError, scheduled, combineLatest, Subject } from 'rxjs';
 import { take, takeUntil, observeOn, tap, withLatestFrom, map, catchError, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import * as i0 from '@angular/core';
 import { InjectionToken, inject, computed, isDevMode, Injectable, Optional, Inject } from '@angular/core';
@@ -350,10 +350,10 @@ class ComponentStore {
                 `Please make sure it is initialized before updating/getting.`);
         }
     }
-    /** @nocollapse */ static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0-next.8", ngImport: i0, type: ComponentStore, deps: [{ token: INITIAL_STATE_TOKEN, optional: true }], target: i0.ɵɵFactoryTarget.Injectable }); }
-    /** @nocollapse */ static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0-next.8", ngImport: i0, type: ComponentStore }); }
+    /** @nocollapse */ static { this.ɵfac = i0.ɵɵngDeclareFactory({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: ComponentStore, deps: [{ token: INITIAL_STATE_TOKEN, optional: true }], target: i0.ɵɵFactoryTarget.Injectable }); }
+    /** @nocollapse */ static { this.ɵprov = i0.ɵɵngDeclareInjectable({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: ComponentStore }); }
 }
-i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0-next.8", ngImport: i0, type: ComponentStore, decorators: [{
+i0.ɵɵngDeclareClassMetadata({ minVersion: "12.0.0", version: "17.0.0", ngImport: i0, type: ComponentStore, decorators: [{
             type: Injectable
         }], ctorParameters: () => [{ type: undefined, decorators: [{
                     type: Optional
