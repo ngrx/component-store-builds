@@ -25,7 +25,8 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.migrateTapResponseImport = void 0;
+exports.migrateTapResponseImport = migrateTapResponseImport;
+exports.default = default_1;
 var ts = require("typescript");
 var schematics_1 = require("@angular-devkit/schematics");
 var schematics_core_1 = require("../../schematics-core");
@@ -105,7 +106,6 @@ function migrateTapResponseImport() {
         });
     };
 }
-exports.migrateTapResponseImport = migrateTapResponseImport;
 function getImportDeclarations(node, imports) {
     if (ts.isImportDeclaration(node)) {
         imports.push(node);
@@ -127,5 +127,4 @@ function getComponentStoreNamedBinding(node) {
 function default_1() {
     return (0, schematics_1.chain)([migrateTapResponseImport()]);
 }
-exports.default = default_1;
 //# sourceMappingURL=index.js.map
